@@ -12,6 +12,8 @@ RUN sudo apt-get update; \
 RUN dotnet tool install -g Microsoft.Tye --version "0.7.0-alpha.21279.2"
 ENV PATH="$PATH:/home/gitpod/.dotnet/tools"  
 
+RUN wget -q https://raw.githubusercontent.com/dapr/cli/master/install/install.sh -O - | /bin/bash
+
 # Install custom tools, runtimes, etc.
 # For example "bastet", a command-line tetris clone:
 # RUN brew install bastet
