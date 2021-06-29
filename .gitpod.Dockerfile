@@ -6,7 +6,7 @@ RUN sudo dpkg -i packages-microsoft-prod.deb
 RUN sudo apt-get update; \
   sudo apt-get install -y apt-transport-https && \
   sudo apt-get update && \
-  sudo apt-get install -y dotnet-sdk-5 && \
+  sudo apt-get install -y dotnet-sdk-5.0 && \
   sudo apt-get install -y dotnet-sdk-3.1
 
 RUN dotnet tool install -g Microsoft.Tye --version "0.7.0-alpha.21279.2"
