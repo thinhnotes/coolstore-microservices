@@ -105,3 +105,4 @@ services:
   volumes:
     - target: /docker-entrypoint-initdb.d/tye_postgres_init.sql
       source: tye_postgres_init.sql
+

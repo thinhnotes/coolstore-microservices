@@ -20,8 +20,8 @@ services:
   webapigatewayapp:
     image: ghcr.io/vietnam-devs/coolstore-microservices/webapigatewayapp-v6:0.1.0
     build:
-      context: .
-      dockerfile: src/dotnet/api-gateway/Dockerfile
+      context: ./src/dotnet/.
+      dockerfile: api-gateway/Dockerfile
     depends_on:
       - placement
       - identityapp
