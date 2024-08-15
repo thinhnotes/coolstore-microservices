@@ -1,11 +1,11 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-FROM mcr.microsoft.com/dotnet/aspnet:5.0-buster-slim AS base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0  AS base
 WORKDIR /app
 ENV ASPNETCORE_URLS=http://+:5004
 EXPOSE 5004
 
-FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0  AS build
 WORKDIR /src
 COPY ["src/Services/ShoppingCart/ShoppingCartService.Api/ShoppingCartService.Api.csproj", "src/Services/ShoppingCart/ShoppingCartService.Api/"]
 COPY ["src/Services/ShoppingCart/ShoppingCartService/ShoppingCartService.csproj", "src/Services/ShoppingCart/ShoppingCartService/"]
