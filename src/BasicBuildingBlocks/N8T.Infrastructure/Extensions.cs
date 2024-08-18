@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Reflection;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -9,9 +10,6 @@ using Microsoft.Extensions.Hosting;
 using N8T.Infrastructure.Logging;
 using N8T.Infrastructure.Validator;
 using Serilog;
-using Serilog.Core;
-using Serilog.Events;
-using Serilog.Sinks.SystemConsole.Themes;
 
 namespace N8T.Infrastructure
 {
@@ -21,9 +19,13 @@ namespace N8T.Infrastructure
         public static IServiceCollection AddCustomMediatR<TType>(this IServiceCollection services,
             Action<IServiceCollection> doMoreActions = null)
         {
-            services.AddMediatR(typeof(TType))
-                .AddScoped(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>))
-                .AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()))
+                    .AddScoped(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>))
+                    .AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+
+            //services.AddMediatR(typeof(TType))
+            //    .AddScoped(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>))
+            //    .AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 
             doMoreActions?.Invoke(services);
 
@@ -67,7 +69,7 @@ namespace N8T.Infrastructure
             try
             {
                 var converter = TypeDescriptor.GetConverter(typeof(T));
-                return (T) converter.ConvertFromString(input);
+                return (T)converter.ConvertFromString(input);
             }
             catch (NotSupportedException)
             {
