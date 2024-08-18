@@ -1,14 +1,11 @@
 // Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Builder;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
 using System;
-using System.Diagnostics;
 
 namespace IdentityService
 {
@@ -16,9 +13,6 @@ namespace IdentityService
     {
         public static int Main(string[] args)
         {
-            Activity.DefaultIdFormat = ActivityIdFormat.W3C;
-            Activity.ForceDefaultIdFormat = true;
-
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
@@ -38,8 +32,14 @@ namespace IdentityService
 
             try
             {
-                Log.Information("Starting host...");
-                CreateHostBuilder(args).Build().Run();
+                var builder = WebApplication.CreateBuilder(args);
+                builder.Host.UseSerilog();
+
+                var app = builder
+                            .ConfigureServices()
+                            .ConfigurePipeline();
+
+                app.Run();
                 return 0;
             }
             catch (Exception ex)
@@ -52,13 +52,5 @@ namespace IdentityService
                 Log.CloseAndFlush();
             }
         }
-
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .UseSerilog()
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
     }
 }

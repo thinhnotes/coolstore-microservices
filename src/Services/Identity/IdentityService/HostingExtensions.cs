@@ -1,37 +1,21 @@
-// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
-
-
 using IdentityServer4;
 using IdentityServer4.Services;
 using IdentityServerHost.Quickstart.UI;
 using IdentityService.Custom;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace IdentityService
 {
-    public class Startup
+    internal static class HostingExtensions
     {
-        public IWebHostEnvironment Environment { get; }
-        public IConfiguration Configuration { get; }
-
-        public Startup(IWebHostEnvironment environment, IConfiguration configuration)
+        public static WebApplication ConfigureServices(this WebApplicationBuilder builder)
         {
-            Environment = environment;
-            Configuration = configuration;
-        }
+            builder.Services.AddControllersWithViews();
 
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddControllersWithViews();
-
-            var builder = services.AddIdentityServer(options =>
+            var isBuilder = builder.Services.AddIdentityServer(options =>
             {
                 options.Events.RaiseErrorEvents = true;
                 options.Events.RaiseInformationEvents = true;
@@ -44,21 +28,21 @@ namespace IdentityService
                 .AddTestUsers(TestUsers.Users);
 
             // in-memory, code config
-            builder.AddInMemoryIdentityResources(Config.IdentityResources);
-            builder.AddInMemoryApiScopes(Config.ApiScopes);
-            builder.AddInMemoryClients(Config.Clients);
+            isBuilder.AddInMemoryIdentityResources(Config.IdentityResources);
+            isBuilder.AddInMemoryApiScopes(Config.ApiScopes);
+            isBuilder.AddInMemoryClients(Config.Clients);
 
             // not recommended for production - you need to store your key material somewhere secure
-            builder.AddDeveloperSigningCredential();
+            isBuilder.AddDeveloperSigningCredential();
 
-            services.Configure<CookiePolicyOptions>(options =>
+            builder.Services.Configure<CookiePolicyOptions>(options =>
             {
                 options.MinimumSameSitePolicy = SameSiteMode.None;
                 options.OnAppendCookie = cookieContext => CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
                 options.OnDeleteCookie = cookieContext => CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
             });
 
-            services.AddAuthentication()
+            builder.Services.AddAuthentication()
                 .AddGoogle(options =>
                 {
                     options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
@@ -70,17 +54,18 @@ namespace IdentityService
                     options.ClientSecret = "copy client secret from Google here";
                 });
 
-            services.AddHealthChecks();
+            builder.Services.AddHealthChecks();
 
-            services.AddScoped<IProfileService, ProfileService>();
+            builder.Services.AddScoped<IProfileService, ProfileService>();
+            return builder.Build();
         }
 
-        public void Configure(IApplicationBuilder app)
+        public static WebApplication ConfigurePipeline(this WebApplication app)
         {
-            if (Environment.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            //if (Environment.IsDevelopment())
+            //{
+            //    app.UseDeveloperExceptionPage();
+            //}
 
             app.UseStaticFiles();
 
@@ -90,12 +75,13 @@ namespace IdentityService
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHealthChecks("/healthz", new HealthCheckOptions {Predicate = _ => true});
+                endpoints.MapHealthChecks("/healthz", new HealthCheckOptions { Predicate = _ => true });
                 endpoints.MapHealthChecks("/liveness",
-                    new HealthCheckOptions {Predicate = r => r.Name.Contains("self")});
+                    new HealthCheckOptions { Predicate = r => r.Name.Contains("self") });
 
                 endpoints.MapDefaultControllerRoute();
             });
+            return app;
         }
 
         private static void CheckSameSite(HttpContext httpContext, CookieOptions options)
