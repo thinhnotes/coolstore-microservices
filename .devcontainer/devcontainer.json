@@ -1,0 +1,26 @@
+{
+    "features": {
+        "ghcr.io/devcontainers/features/docker-in-docker:1": {
+            "version": "latest"
+        },
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "latest"
+        },
+        "ghcr.io/devcontainers/features/powershell:1": {},
+        "ghcr.io/nikiforovall/devcontainer-features/dotnet-aspire:1": {},
+        "ghcr.io/devcontainers/features/dotnet:2": {}
+    },
+    "customizations": {
+        // Configure properties specific to VS Code.
+        "vscode": {
+            "extensions": [
+                "humao.rest-client",
+                "ms-dotnettools.csharp",
+                "ms-azuretools.vscode-docker",
+                "Vue.volar",
+                "formulahendry.vscode-mysql",
+                "ms-dotnettools.csdevkit"
+            ]
+        }
+    }
+}
