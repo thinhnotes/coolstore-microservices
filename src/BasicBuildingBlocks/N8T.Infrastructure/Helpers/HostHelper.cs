@@ -31,9 +31,10 @@ namespace N8T.Infrastructure.Helpers
                 hostBuilder = hostBuilder
                     .ConfigureWebHostDefaults(webBuilder =>
                     {
-                        webBuilder
-                            .UseSerilog()
-                            .UseStartup<TStartup>();
+                        //TOTO: will check latest
+                        //webBuilder
+                        //    .UseSerilog()
+                        //    .UseStartup<TStartup>();
                     });
             }
 
