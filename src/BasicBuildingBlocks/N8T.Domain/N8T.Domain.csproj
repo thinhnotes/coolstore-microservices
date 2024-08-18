@@ -4,6 +4,6 @@
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="MediatR" Version="9.0.0" />
+    <PackageReference Include="MediatR" Version="12.4.0" />
   </ItemGroup>
 </Project>

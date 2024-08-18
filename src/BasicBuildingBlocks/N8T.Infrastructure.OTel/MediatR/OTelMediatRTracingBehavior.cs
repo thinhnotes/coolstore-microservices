@@ -22,9 +22,7 @@ namespace N8T.Infrastructure.OTel.MediatR
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<TResponse> Handle(TRequest request,
-            CancellationToken cancellationToken,
-            RequestHandlerDelegate<TResponse> next)
+        public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
             var traceId = Activity.Current?.TraceId.ToString() ?? _httpContextAccessor?.HttpContext?.TraceIdentifier;
             const string prefix = nameof(OTelMediatRTracingBehavior<TRequest, TResponse>);
