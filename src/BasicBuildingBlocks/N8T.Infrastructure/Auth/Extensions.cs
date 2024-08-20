@@ -19,6 +19,7 @@ namespace N8T.Infrastructure.Auth
                 .AddJwtBearer(options =>
                 {
                     config.Bind("Authn", options);
+                    options.Authority = "https://localhost:5001";
                     configureOptions?.Invoke(options);
                 });
 

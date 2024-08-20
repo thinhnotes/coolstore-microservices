@@ -1,3 +1,4 @@
+using System.Security.Cryptography.X509Certificates;
 using Duende.IdentityServer;
 using Duende.IdentityServer.Services;
 using IdentityService;
@@ -16,6 +17,7 @@ namespace IdentityService
 
             var isBuilder = builder.Services.AddIdentityServer(options =>
                 {
+                    options.IssuerUri = "https://localhost:5001";
                     options.Events.RaiseErrorEvents = true;
                     options.Events.RaiseInformationEvents = true;
                     options.Events.RaiseFailureEvents = true;
@@ -26,12 +28,16 @@ namespace IdentityService
                 })
                 .AddTestUsers(TestUsers.Users);
 
+            //th line for development only because it generate signing
+            isBuilder.AddSigningCredential(new X509Certificate2("keys/aspnetapp.pfx", "P@ssw0rd"));
+
             // in-memory, code config
             isBuilder.AddInMemoryIdentityResources(Config.IdentityResources);
             isBuilder.AddInMemoryApiScopes(Config.ApiScopes);
             isBuilder.AddInMemoryClients(Config.Clients);
+            isBuilder.AddInMemoryApiResources(Config.ApiResources);
 
-			// not recommended for production - you need to store your key material somewhere secure
+            // not recommended for production - you need to store your key material somewhere secure
             isBuilder.AddDeveloperSigningCredential();
 
             builder.Services.Configure<CookiePolicyOptions>(options =>

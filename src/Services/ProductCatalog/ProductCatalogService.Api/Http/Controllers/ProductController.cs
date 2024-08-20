@@ -14,13 +14,13 @@ namespace ProductCatalogService.Api.Http.Controllers
     [Route("api/products")]
     public class ProductController : ControllerBase
     {
-        // [Authorize]
+        [Authorize]
         [HttpGet("{page}/{price}")]
         public async Task<IEnumerable<FlatProductDto>> Get([FromServices] IMediator mediator,
             int page, double price) =>
             await mediator.Send(new GetProductsByPriceAndNameQuery {Page = page, Price = price});
 
-        // [Authorize]
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<FlatProductDto> Get([FromServices] IMediator mediator, Guid id) =>
             await mediator.Send(new GetDetailOfSpecificProductQuery {Id = id});

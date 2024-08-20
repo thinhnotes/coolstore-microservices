@@ -13,6 +13,9 @@ using N8T.Infrastructure.EfCore;
 using N8T.Infrastructure.OTel;
 using N8T.Infrastructure.Tye;
 using N8T.Infrastructure.Validator;
+using N8T.Infrastructure.Swagger;
+using System.Collections.Generic;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,13 +33,7 @@ builder.Services.AddHealthChecks()
 
 builder.Services.AddCustomAuth<Anchor>(builder.Configuration, options =>
 {
-    options.Authority = isRunOnTye
-        ? builder.Configuration.GetServiceUri("identityapp")?.AbsoluteUri
-        : options.Authority;
-
-    options.Audience = isRunOnTye
-        ? $"{builder.Configuration.GetServiceUri("identityapp")?.AbsoluteUri.TrimEnd('/')}/resources"
-        : options.Audience;
+    options.Audience = "inventory";
 });
 
 builder.Services.AddCustomOtelWithZipkin(builder.Configuration,
@@ -47,12 +44,18 @@ builder.Services.AddCustomOtelWithZipkin(builder.Configuration,
             : o.Endpoint;
     });
 
+builder.Services.AddOpenApi("https://localhost:5001", new Dictionary<string, string>
+            {
+                {"scope1", "Demo API - full access"}
+            });
+
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
 }
 app.UseRouting();
+app.UseOpenApi("inventory_api_swagger");
 
 app.UseAuthentication();
 app.UseAuthorization();

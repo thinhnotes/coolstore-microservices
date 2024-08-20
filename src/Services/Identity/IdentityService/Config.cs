@@ -1,4 +1,4 @@
-﻿using Duende.IdentityServer.Models;
+using Duende.IdentityServer.Models;
 
 namespace IdentityService
 {
@@ -16,6 +16,15 @@ namespace IdentityService
             {
                 new ApiScope("scope1"),
                 new ApiScope("scope2"),
+            };
+
+        public static IEnumerable<ApiResource> ApiResources =>
+            new ApiResource[]
+            {
+                new ApiResource("inventory")
+                {
+                    Scopes = { "scope1" }
+                }
             };
 
         public static IEnumerable<Client> Clients =>
@@ -91,7 +100,20 @@ namespace IdentityService
 
                     AllowedScopes = {"openid", "profile", "scope1", "scope2"}
                 },
+                new Client
+                {
+                    ClientId = "inventory_api_swagger",
+                    ClientName = "Swagger UI for Inventory API",
+                    ClientSecrets = {new Secret("secret".Sha256())}, // change me!
 
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequirePkce = false,
+                    RequireClientSecret = false,
+
+                    RedirectUris = {"https://localhost:5002/swagger/oauth2-redirect.html"},
+                    AllowedCorsOrigins = {"https://localhost:5002"},
+                    AllowedScopes = { "scope1" }
+                },
                 // password flow
                 new Client
                 {

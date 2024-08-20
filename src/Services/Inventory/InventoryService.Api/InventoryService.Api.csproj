@@ -3,6 +3,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
+    <UserSecretsId>b324d88b-fd65-4a7f-b7e5-bdbb32e61c86</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\InventoryService\InventoryService.csproj" />
