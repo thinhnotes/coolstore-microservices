@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using Dapr;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -22,7 +21,7 @@ namespace SaleService.Api.Subscriber
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        [Topic("pubsub", "processing-order")]
+        //[Topic("pubsub", "processing-order")]
         [HttpPost("processing-order")]
         public async Task SubscribeOrderProcessing(ShoppingCartCheckedOut @event)
         {

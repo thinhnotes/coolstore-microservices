@@ -4,24 +4,19 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Dapr;
-using Dapr.Client;
 using Newtonsoft.Json;
 using StackExchange.Redis;
-using static Google.Rpc.Context.AttributeContext.Types;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace N8T.Infrastructure.ClientServices
 {
     public class ClientServices : IClientServices
     {
-        private readonly DaprClient _daprClient;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConnectionMultiplexer _redis;
 
-        public ClientServices(DaprClient daprClient, IHttpClientFactory httpClientFactory, IConnectionMultiplexer redis)
+        public ClientServices(IHttpClientFactory httpClientFactory, IConnectionMultiplexer redis)
         {
-            _daprClient = daprClient ?? throw new ArgumentNullException(nameof(daprClient));
             _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
             _redis = redis ?? throw new ArgumentNullException(nameof(redis));
         }
@@ -49,26 +44,22 @@ namespace N8T.Infrastructure.ClientServices
 
         public Task PublishEventAsync<TData>(string pubsubName, string topicName, TData data, CancellationToken cancellationToken = default)
         {
-            return _daprClient.PublishEventAsync(pubsubName, topicName, data, cancellationToken);
+            throw new NotImplementedException();
+            //return _daprClient.PublishEventAsync(pubsubName, topicName, data, cancellationToken);
         }
 
         #endregion
 
         #region State
 
-        public async Task<TValue> GetStateAsync<TValue>(string storeName, string key, ConsistencyMode? consistencyMode = null, IReadOnlyDictionary<string, string> metadata = null, CancellationToken cancellationToken = default)
+        public async Task<TValue> GetStateAsync<TValue>(string storeName, string key, IReadOnlyDictionary<string, string> metadata = null, CancellationToken cancellationToken = default)
         {
             var db = _redis.GetDatabase();
             string value = await db.StringGetAsync(key);
             return Newtonsoft.Json.JsonConvert.DeserializeObject<TValue>(value);
         }
 
-        public Task<StateEntry<TValue>> GetStateEntryAsync<TValue>(string storeName, string key, ConsistencyMode? consistencyMode = null, IReadOnlyDictionary<string, string> metadata = null, CancellationToken cancellationToken = default)
-        {
-            return _daprClient.GetStateEntryAsync<TValue>(storeName, key, cancellationToken: cancellationToken);
-        }
-
-        public async Task SaveStateAsync<TValue>(string storeName, string key, TValue value, StateOptions stateOptions = null, IReadOnlyDictionary<string, string> metadata = null, CancellationToken cancellationToken = default)
+        public async Task SaveStateAsync<TValue>(string storeName, string key, TValue value, IReadOnlyDictionary<string, string> metadata = null, CancellationToken cancellationToken = default)
         {
             var db = _redis.GetDatabase();
             await db.StringSetAsync(key, JsonConvert.SerializeObject(value));

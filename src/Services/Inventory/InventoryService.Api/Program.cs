@@ -54,8 +54,6 @@ if (app.Environment.IsDevelopment())
 }
 app.UseRouting();
 
-app.UseCloudEvents();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -66,7 +64,6 @@ app.UseEndpoints(endpoints =>
         new HealthCheckOptions { Predicate = r => r.Name.Contains("self") });
 
     endpoints.MapControllers();
-    endpoints.MapSubscribeHandler();
 });
 
 //app.ApplicationServices.CreateLoggerConfiguration(IsRunOnTye);
