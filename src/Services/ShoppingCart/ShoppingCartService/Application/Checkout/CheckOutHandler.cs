@@ -24,17 +24,18 @@ namespace ShoppingCartService.Application.Checkout
         {
             var currentUserId = _securityContextAccessor.UserId;
 
-            var cart = await _client.GetStateEntryAsync<CartDto>("statestore", $"shopping-cart-{currentUserId}",
+            var cart = await _client.GetStateAsync<CartDto>("statestore", $"shopping-cart-{currentUserId}",
                 cancellationToken: cancellationToken);
 
-            cart.Value.UserId = currentUserId;
-            var @event = new ShoppingCartCheckedOut { Cart = cart.Value };
+            cart.UserId = currentUserId;
+            var @event = new ShoppingCartCheckedOut { Cart = cart };
             await _client.PublishEventAsync("pubsub", "processing-order", @event, cancellationToken);
 
-            cart.Value = new CartDto();
-            await cart.SaveAsync(cancellationToken: cancellationToken);
+            cart = new CartDto();
+            _client.SaveStateAsync("statestore", "shopping-cart-{currentUserId}", cart,
+                cancellationToken: cancellationToken);
 
-            return cart.Value;
+            return cart;
         }
     }
 }

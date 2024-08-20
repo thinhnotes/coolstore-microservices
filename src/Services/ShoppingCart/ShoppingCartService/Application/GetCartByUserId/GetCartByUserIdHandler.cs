@@ -23,15 +23,17 @@ namespace ShoppingCartService.Application.GetCartByUserId
         {
             var currentUserId = _securityContextAccessor.UserId;
 
-            var cart = await _client.GetStateEntryAsync<CartDto>("statestore", $"shopping-cart-{currentUserId}",
+            var cart = await _client.GetStateAsync<CartDto>("statestore", $"shopping-cart-{currentUserId}",
                 cancellationToken: cancellationToken);
 
-            if (cart.Value is not null) return cart.Value;
+            if (cart is not null)
+                return cart;
 
-            cart.Value = new CartDto();
-            await cart.SaveAsync(cancellationToken: cancellationToken);
+            cart = new CartDto();
+            await _client.SaveStateAsync<CartDto>("statestore", $"shopping-cart-{currentUserId}", cart,
+                cancellationToken: cancellationToken);
 
-            return cart.Value;
+            return cart;
         }
     }
 }

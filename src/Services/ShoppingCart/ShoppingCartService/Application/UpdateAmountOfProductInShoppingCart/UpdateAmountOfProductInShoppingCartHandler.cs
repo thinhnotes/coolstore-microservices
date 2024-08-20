@@ -37,31 +37,32 @@ namespace ShoppingCartService.Application.UpdateAmountOfProductInShoppingCart
         {
             var currentUserId = _securityContextAccessor.UserId;
 
-            var cart = await _client.GetStateEntryAsync<CartDto>("statestore", $"shopping-cart-{currentUserId}",
+            var cart = await _client.GetStateAsync<CartDto>("statestore", $"shopping-cart-{currentUserId}",
                 cancellationToken: cancellationToken);
 
-            if (cart.Value is null)
+            if (cart is null)
             {
                 throw new CoreException($"Couldn't find cart for user_id={currentUserId}");
             }
 
-            var cartItem = cart.Value.Items.FirstOrDefault(x => x.ProductId == request.ProductId);
+            var cartItem = cart.Items.FirstOrDefault(x => x.ProductId == request.ProductId);
 
             // if not exists then it should be a new item
             if (cartItem is null)
             {
-                await cart.Value.InsertItemToCartAsync(request.Quantity, request.ProductId, _productCatalogGateway);
+                await cart.InsertItemToCartAsync(request.Quantity, request.ProductId, _productCatalogGateway);
             }
             else
             {
                 cartItem.Quantity += request.Quantity;
             }
 
-            await cart.Value.CalculateCartAsync(_productCatalogGateway, _shippingGateway, _promoGateway);
+            await cart.CalculateCartAsync(_productCatalogGateway, _shippingGateway, _promoGateway);
 
-            await cart.SaveAsync(cancellationToken: cancellationToken);
+            await _client.SaveStateAsync<CartDto>("statestore", $"shopping-cart-{currentUserId}", cart,
+                cancellationToken: cancellationToken);
 
-            return cart.Value;
+            return cart;
         }
     }
 }

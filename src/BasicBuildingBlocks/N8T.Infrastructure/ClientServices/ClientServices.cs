@@ -2,11 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapr;
 using Dapr.Client;
+using Newtonsoft.Json;
+using StackExchange.Redis;
+using static Google.Rpc.Context.AttributeContext.Types;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace N8T.Infrastructure.ClientServices
 {
@@ -14,11 +17,13 @@ namespace N8T.Infrastructure.ClientServices
     {
         private readonly DaprClient _daprClient;
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IConnectionMultiplexer _redis;
 
-        public ClientServices(DaprClient daprClient, IHttpClientFactory httpClientFactory)
+        public ClientServices(DaprClient daprClient, IHttpClientFactory httpClientFactory, IConnectionMultiplexer redis)
         {
             _daprClient = daprClient ?? throw new ArgumentNullException(nameof(daprClient));
             _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
+            _redis = redis ?? throw new ArgumentNullException(nameof(redis));
         }
 
         #region Request Reponse
@@ -51,9 +56,11 @@ namespace N8T.Infrastructure.ClientServices
 
         #region State
 
-        public Task<TValue> GetStateAsync<TValue>(string storeName, string key, ConsistencyMode? consistencyMode = null, IReadOnlyDictionary<string, string> metadata = null, CancellationToken cancellationToken = default)
+        public async Task<TValue> GetStateAsync<TValue>(string storeName, string key, ConsistencyMode? consistencyMode = null, IReadOnlyDictionary<string, string> metadata = null, CancellationToken cancellationToken = default)
         {
-            return _daprClient.GetStateAsync<TValue>(storeName, key, cancellationToken: cancellationToken);
+            var db = _redis.GetDatabase();
+            string value = await db.StringGetAsync(key);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<TValue>(value);
         }
 
         public Task<StateEntry<TValue>> GetStateEntryAsync<TValue>(string storeName, string key, ConsistencyMode? consistencyMode = null, IReadOnlyDictionary<string, string> metadata = null, CancellationToken cancellationToken = default)
@@ -61,9 +68,10 @@ namespace N8T.Infrastructure.ClientServices
             return _daprClient.GetStateEntryAsync<TValue>(storeName, key, cancellationToken: cancellationToken);
         }
 
-        public Task SaveStateAsync<TValue>(string storeName, string key, TValue value, StateOptions stateOptions = null, IReadOnlyDictionary<string, string> metadata = null, CancellationToken cancellationToken = default)
+        public async Task SaveStateAsync<TValue>(string storeName, string key, TValue value, StateOptions stateOptions = null, IReadOnlyDictionary<string, string> metadata = null, CancellationToken cancellationToken = default)
         {
-            return _daprClient.SaveStateAsync(storeName, key, value, cancellationToken: cancellationToken);
+            var db = _redis.GetDatabase();
+            await db.StringSetAsync(key, JsonConvert.SerializeObject(value));
         }
 
         #endregion

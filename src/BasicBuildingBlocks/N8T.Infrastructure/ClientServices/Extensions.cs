@@ -1,11 +1,12 @@
 using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Redis;
 
 namespace N8T.Infrastructure.ClientServices
 {
     public static class Extensions
     {
-        public static IServiceCollection AddCustomClientServices(this IServiceCollection services)
+        public static IServiceCollection AddCustomClientServices(this IServiceCollection services, string connStringRedis)
         {
             var options = new JsonSerializerOptions()
             {
@@ -15,9 +16,10 @@ namespace N8T.Infrastructure.ClientServices
 
             services.AddSingleton(options);
 
-            services.AddDaprClient(client =>
+            services.AddSingleton<IConnectionMultiplexer>(sp =>
             {
-                client.UseJsonSerializationOptions(options);
+                var configuration = ConfigurationOptions.Parse(connStringRedis);
+                return ConnectionMultiplexer.Connect(configuration);
             });
 
             services.AddScoped<IClientServices, ClientServices>();

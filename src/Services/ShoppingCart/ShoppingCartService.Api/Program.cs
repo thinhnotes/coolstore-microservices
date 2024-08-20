@@ -20,7 +20,7 @@ bool isRunOnTye = builder.Configuration.IsRunOnTye();
 builder.Services.AddHttpContextAccessor()
     .AddCustomMediatR<Anchor>()
     .AddCustomValidators<Anchor>()
-    .AddCustomClientServices()
+    .AddCustomClientServices(builder.Configuration.GetConnectionString("redis"))
     .AddControllers();
 
 builder.Services.AddHealthChecks();
