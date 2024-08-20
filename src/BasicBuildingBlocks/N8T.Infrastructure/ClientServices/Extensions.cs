@@ -1,7 +1,7 @@
 using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace N8T.Infrastructure.Dapr
+namespace N8T.Infrastructure.ClientServices
 {
     public static class Extensions
     {
