@@ -2,18 +2,21 @@
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0  AS base
 WORKDIR /app
-ENV ASPNETCORE_URLS=http://+:5003
-EXPOSE 5003
+ENV ASPNETCORE_URLS=http://+:80
+EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0  AS build
 WORKDIR /src
-COPY ["src/Services/ProductCatalog/ProductCatalogService.Api/ProductCatalogService.Api.csproj", "src/Services/ProductCatalog/ProductCatalogService.Api/"]
-COPY ["src/Services/ProductCatalog/ProductCatalogService/ProductCatalogService.csproj", "src/Services/ProductCatalog/ProductCatalogService/"]
+
 COPY ["src/BasicBuildingBlocks/N8T.Infrastructure.App/N8T.Infrastructure.App.csproj", "src/BasicBuildingBlocks/N8T.Infrastructure.App/"]
 COPY ["src/BasicBuildingBlocks/N8T.Domain/N8T.Domain.csproj", "src/BasicBuildingBlocks/N8T.Domain/"]
 COPY ["src/BasicBuildingBlocks/N8T.Infrastructure/N8T.Infrastructure.csproj", "src/BasicBuildingBlocks/N8T.Infrastructure/"]
 COPY ["src/BasicBuildingBlocks/N8T.Infrastructure.OTel/N8T.Infrastructure.OTel.csproj", "src/BasicBuildingBlocks/N8T.Infrastructure.OTel/"]
 COPY ["src/BasicBuildingBlocks/N8T.Infrastructure.EfCore/N8T.Infrastructure.EfCore.csproj", "src/BasicBuildingBlocks/N8T.Infrastructure.EfCore/"]
+
+COPY ["src/Services/ProductCatalog/ProductCatalogService.Api/ProductCatalogService.Api.csproj", "src/Services/ProductCatalog/ProductCatalogService.Api/"]
+COPY ["src/Services/ProductCatalog/ProductCatalogService/ProductCatalogService.csproj", "src/Services/ProductCatalog/ProductCatalogService/"]
+
 RUN dotnet restore "src/Services/ProductCatalog/ProductCatalogService.Api/ProductCatalogService.Api.csproj"
 COPY . .
 WORKDIR "/src/src/Services/ProductCatalog/ProductCatalogService.Api"

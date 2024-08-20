@@ -10,10 +10,10 @@ namespace IdentityService
     public static class Config
     {
         public static IEnumerable<IdentityResource> IdentityResources =>
-            new IdentityResource[] {new IdentityResources.OpenId(), new IdentityResources.Profile(),};
+            new IdentityResource[] { new IdentityResources.OpenId(), new IdentityResources.Profile(), };
 
         public static IEnumerable<ApiScope> ApiScopes =>
-            new ApiScope[] {new ApiScope("scope1"), new ApiScope("scope2"),};
+            new ApiScope[] { new ApiScope("scope1"), new ApiScope("scope2"), };
 
         public static IEnumerable<Client> Clients =>
             new Client[]
@@ -55,24 +55,28 @@ namespace IdentityService
                 {
                     ClientId = "coolstore.web",
                     ClientName = "React Web",
-                    ClientUri = "http://localhost:3000",
+                    ClientUri = "http://cool-store.ml:3000",
                     AllowedGrantTypes = GrantTypes.Implicit,
                     AllowAccessTokensViaBrowser = true,
                     RedirectUris =
                     {
                         "http://localhost:3000/auth/callback",
                         "http://localhost:3000/auth/silent-renew",
+                        "http://cool-store.ml:3000/auth/callback",
+                        "http://cool-store.ml:3000/auth/silent-renew",
                         "http://cool-store.ml/auth/callback",
                         "http://cool-store.ml/auth/silent-renew"
                     },
                     PostLogoutRedirectUris =
                     {
                         "http://cool-store.ml",
+                        "http://cool-store.ml:3000",
                         "http://localhost:3000"
                     },
                     AllowedCorsOrigins =
                     {
                         "http://cool-store.ml",
+                        "http://cool-store.ml:3000",
                         "http://localhost:3000"
                     },
                     AllowedScopes = { "openid", "profile", "scope2" }

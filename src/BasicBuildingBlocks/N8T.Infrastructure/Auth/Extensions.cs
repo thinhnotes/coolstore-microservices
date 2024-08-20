@@ -31,7 +31,7 @@ namespace N8T.Infrastructure.Auth
                 });
             });
 
-            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(AuthBehavior<,>));
+            //services.AddScoped(typeof(IPipelineBehavior<,>), typeof(AuthBehavior<,>));
 
             services.Scan(s => s
                 .FromAssemblyOf<TType>()

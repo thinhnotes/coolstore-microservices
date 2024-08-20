@@ -31,7 +31,7 @@ namespace N8T.Infrastructure.ClientServices
                 JsonSerializer.Serialize(data),
                 Encoding.UTF8,
                 "application/json");
-            var response = await httpClient.PostAsync($"{appId}/{methodName}", jsonContent, cancellationToken);
+            var response = await httpClient.PostAsync($"http://{appId}/{methodName}", jsonContent, cancellationToken);
             if (!response.IsSuccessStatusCode)
                 return default(TResponse);
             var content = await response.Content.ReadAsStringAsync(cancellationToken);

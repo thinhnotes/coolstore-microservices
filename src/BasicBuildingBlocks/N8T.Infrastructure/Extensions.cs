@@ -19,7 +19,7 @@ namespace N8T.Infrastructure
         public static IServiceCollection AddCustomMediatR<TType>(this IServiceCollection services,
             Action<IServiceCollection> doMoreActions = null)
         {
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()))
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<TType>())
                     .AddScoped(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>))
                     .AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 

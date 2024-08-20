@@ -5,65 +5,69 @@ services:
   web:
     environment:
       - PORT=3000
-      - REACT_APP_AUTHORITY=http://localhost:5001
-      - REACT_APP_API=http://localhost:5000
+      - REACT_APP_AUTHORITY=http://cool-store.ml:5001
+      - REACT_APP_API=http://cool-store.ml:5000
     ports:
       - 3000:3000
 
   webapigatewayapp:
     environment:
-      - Services__inventoryapp=http://inventoryapp:5002
-      - Services__productcatalogapp=http://productcatalogapp:5003
-      - Services__shoppingcartapp=http://shoppingcartapp:5004
-      - Services__saleapp=http://saleapp:5005
+      - Services__inventoryapp=http://inventoryapp
+      - Services__productcatalogapp=http://productcatalogapp
+      - Services__shoppingcartapp=http://shoppingcartapp
+      - Services__saleapp=http://saleapp
       - OtelZipkin__Endpoint=http://zipkin:9411/api/v2/spans
     ports:
-      - "5000:5000"
+      - "5000:80"
 
   identityapp:
     ports:
-      - "5001:5001"
+      - "5001:80"
 
   inventoryapp:
     environment:
       - ConnectionStrings__postgres=Server=postgresql;Port=5432;Database=postgres;User Id=postgres;Password=P@ssw0rd;
+      - ConnectionStrings__redis=redis:6379
       - Redis__Url=redis:6379
-      - Authn__Authority=http://identityapp:5001
-      - Authn__Audience=http://localhost:5001/resources
+      - Authn__Authority=http://identityapp
+      - Authn__Audience=http://cool-store.ml/resources
       - OtelZipkin__Endpoint=http://zipkin:9411/api/v2/spans
     ports:
-      - "5002:5002"
+      - "5002:80"
 
   productcatalogapp:
     restart: always
     environment:
       - ConnectionStrings__postgres=Server=postgresql;Port=5432;Database=postgres;User Id=postgres;Password=P@ssw0rd;
+      - ConnectionStrings__redis=redis:6379
       - Redis__Url=redis:6379
-      - Authn__Authority=http://identityapp:5001
-      - Authn__Audience=http://localhost:5001/resources
+      - Authn__Authority=http://identityapp
+      - Authn__Audience=http://cool-store.ml/resources
       - OtelZipkin__Endpoint=http://zipkin:9411/api/v2/spans
     ports:
-      - "5003:5003"
+      - "5003:80"
 
   shoppingcartapp:
     environment:
       - ConnectionStrings__postgres=Server=postgresql;Port=5432;Database=postgres;User Id=postgres;Password=P@ssw0rd;
+      - ConnectionStrings__redis=redis:6379
       - Redis__Url=redis:6379
-      - Authn__Authority=http://identityapp:5001
-      - Authn__Audience=http://localhost:5001/resources
+      - Authn__Authority=http://identityapp
+      - Authn__Audience=http://cool-store.ml/resources
       - OtelZipkin__Endpoint=http://zipkin:9411/api/v2/spans
     ports:
-      - "5004:5004"
+      - "5004:80"
 
   saleapp:
     environment:
       - ConnectionStrings__postgres=Server=postgresql;Port=5432;Database=postgres;User Id=postgres;Password=P@ssw0rd;
+      - ConnectionStrings__redis=redis:6379
       - Redis__Url=redis:6379
-      - Authn__Authority=http://identityapp:5001
-      - Authn__Audience=http://localhost:5001/resources
+      - Authn__Authority=http://identityapp
+      - Authn__Audience=http://cool-store.ml/resources
       - OtelZipkin__Endpoint=http://zipkin:9411/api/v2/spans
     ports:
-      - "5005:5005"
+      - "5005:80"
 
   postgresql:
     environment:
@@ -71,7 +75,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=P@ssw0rd
     ports:
-      - "5432:5432"
+      - "5434:5432"
 
   # elk:
   #   ports:
@@ -90,4 +94,4 @@ services:
       - ALLOW_EMPTY_PASSWORD=yes
       - DISABLE_COMMANDS=FLUSHDB,FLUSHALL,CONFIG
     ports:
-      - "6379:6379"
+      - "6377:6379"

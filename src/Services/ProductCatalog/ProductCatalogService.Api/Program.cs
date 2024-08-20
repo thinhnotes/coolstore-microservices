@@ -58,8 +58,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseRouting();
 
-app.UseAuthentication();
-app.UseAuthorization();
+// app.UseAuthentication();
+// app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>
 {
@@ -69,6 +69,7 @@ app.UseEndpoints(endpoints =>
 
     endpoints.MapControllers();
 });
+
 
 //app.ApplicationServices.CreateLoggerConfiguration(IsRunOnTye);
 

@@ -16,6 +16,8 @@ namespace N8T.Infrastructure.ClientServices
 
             services.AddSingleton(options);
 
+            services.AddHttpClient();
+
             services.AddSingleton<IConnectionMultiplexer>(sp =>
             {
                 var configuration = ConfigurationOptions.Parse(connStringRedis);

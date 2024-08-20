@@ -10,7 +10,7 @@ namespace ProductCatalogService.Api.Http.Controllers
     [Route("api/product-search")]
     public class ProductSearchController : ControllerBase
     {
-        [Authorize]
+        // [Authorize]
         [HttpGet("{query}/{price}/{page}/{pageSize}")]
         public async Task<SearchProductsResponse> Get([FromServices] IMediator mediator,
             string query, double price, int page = 1, int pageSize = 20) =>
