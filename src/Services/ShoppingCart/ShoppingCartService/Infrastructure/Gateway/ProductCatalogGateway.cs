@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Dapr.Client;
 using Microsoft.Extensions.Logging;
 using N8T.Domain;
 using N8T.Infrastructure.App.Dtos;
@@ -12,12 +11,12 @@ namespace ShoppingCartService.Infrastructure.Gateway
 {
     public class ProductCatalogGateway : IProductCatalogGateway
     {
-        private readonly DaprClient _daprClient;
+        private readonly IClientServices _client;
         private readonly ILogger<ProductCatalogGateway> _logger;
 
-        public ProductCatalogGateway(DaprClient daprClient, ILogger<ProductCatalogGateway> logger)
+        public ProductCatalogGateway(IClientServices client, ILogger<ProductCatalogGateway> logger)
         {
-            _daprClient = daprClient ?? throw new ArgumentNullException(nameof(daprClient));
+            _client = _client ?? throw new ArgumentNullException(nameof(_client));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -25,11 +24,12 @@ namespace ShoppingCartService.Infrastructure.Gateway
         {
             _logger.LogInformation("{Prefix}: GetProductByIdAsync by id={Id}", nameof(ProductCatalogGateway), id);
 
-            var product = await _daprClient.GetStateAsync<ProductDto>("statestore", $"product-{id}", cancellationToken: cancellationToken);
-            if (product is not null) return product;
+            var product = await _client.GetStateAsync<ProductDto>("statestore", $"product-{id}", cancellationToken: cancellationToken);
+            if (product is not null)
+                return product;
 
-            var requestData = new ProductByIdRequest {Id = id};
-            product = await _daprClient.InvokeMethodAsync<ProductByIdRequest, ProductDto>(
+            var requestData = new ProductByIdRequest { Id = id };
+            product = await _client.InvokeMethodAsync<ProductByIdRequest, ProductDto>(
                 "productcatalogapp", "get-product-by-id", requestData, cancellationToken: cancellationToken);
 
             if (product is null)
@@ -37,7 +37,7 @@ namespace ShoppingCartService.Infrastructure.Gateway
                 throw new CoreException($"Couldn't find out product with id={id}");
             }
 
-            await _daprClient.SaveStateAsync("statestore", $"product-{id}", product, cancellationToken: cancellationToken);
+            await _client.SaveStateAsync("statestore", $"product-{id}", product, cancellationToken: cancellationToken);
 
             return product;
         }

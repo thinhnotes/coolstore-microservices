@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Dapr.Client;
 using MediatR;
 using N8T.Infrastructure.App.Dtos;
 using N8T.Infrastructure.Auth;
@@ -10,12 +9,12 @@ namespace ShoppingCartService.Application.GetCartByUserId
 {
     public class GetCartByUserIdHandler : IRequestHandler<GetCartByUserIdQuery, CartDto>
     {
-        private readonly DaprClient _daprClient;
+        private readonly IClientServices _client;
         private readonly ISecurityContextAccessor _securityContextAccessor;
 
-        public GetCartByUserIdHandler(DaprClient daprClient, ISecurityContextAccessor securityContextAccessor)
+        public GetCartByUserIdHandler(IClientServices _client, ISecurityContextAccessor securityContextAccessor)
         {
-            _daprClient = daprClient ?? throw new ArgumentNullException(nameof(daprClient));
+            _client = _client ?? throw new ArgumentNullException(nameof(_client));
             _securityContextAccessor = securityContextAccessor ?? throw new ArgumentNullException(nameof(securityContextAccessor));
         }
 
@@ -23,7 +22,7 @@ namespace ShoppingCartService.Application.GetCartByUserId
         {
             var currentUserId = _securityContextAccessor.UserId;
 
-            var cart = await _daprClient.GetStateEntryAsync<CartDto>("statestore", $"shopping-cart-{currentUserId}",
+            var cart = await _client.GetStateEntryAsync<CartDto>("statestore", $"shopping-cart-{currentUserId}",
                 cancellationToken: cancellationToken);
 
             if (cart.Value is not null) return cart.Value;

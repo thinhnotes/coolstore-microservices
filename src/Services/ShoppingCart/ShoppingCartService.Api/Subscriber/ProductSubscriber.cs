@@ -1,5 +1,4 @@
 using System;
-using Dapr.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -9,12 +8,12 @@ namespace ShoppingCartService.Api.Subscriber
     [Route("")]
     public class ProductSubscriber : ControllerBase
     {
-        private readonly DaprClient _daprClient;
+        private readonly IClientServices _client;
         private readonly ILogger<ProductSubscriber> _logger;
 
-        public ProductSubscriber(DaprClient daprClient, ILogger<ProductSubscriber> logger)
+        public ProductSubscriber(IClientServices client, ILogger<ProductSubscriber> logger)
         {
-            _daprClient = daprClient ?? throw new ArgumentNullException(nameof(daprClient));
+            _client = client ?? throw new ArgumentNullException(nameof(client));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
     }

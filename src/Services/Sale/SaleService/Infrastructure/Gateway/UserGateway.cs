@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Dapr.Client;
 using Microsoft.Extensions.Logging;
 using N8T.Infrastructure.App.Dtos;
 using N8T.Infrastructure.App.Requests.Identity;
@@ -11,12 +10,12 @@ namespace SaleService.Infrastructure.Gateway
 {
     public class UserGateway : IUserGateway
     {
-        private readonly DaprClient _daprClient;
+        private readonly IClientServices _client;
         private readonly ILogger<UserGateway> _logger;
 
-        public UserGateway(DaprClient daprClient, ILogger<UserGateway> logger)
+        public UserGateway(IClientServices client, ILogger<UserGateway> logger)
         {
-            _daprClient = daprClient ?? throw new ArgumentNullException(nameof(daprClient));
+            _client = client ?? throw new ArgumentNullException(nameof(client));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -24,8 +23,8 @@ namespace SaleService.Infrastructure.Gateway
         {
             _logger.LogInformation("{Prefix}: GetUserInfo by id={Id}", nameof(UserGateway), userId);
 
-            var requestData = new UserByIdRequest {UserId = userId};
-            return await _daprClient.InvokeMethodAsync<UserByIdRequest, UserDto>(
+            var requestData = new UserByIdRequest { UserId = userId };
+            return await _client.InvokeMethodAsync<UserByIdRequest, UserDto>(
                 "identityapp", "get-user-by-id", requestData, cancellationToken: cancellationToken);
         }
     }

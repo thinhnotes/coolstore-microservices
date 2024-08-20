@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Dapr.Client;
 using MediatR;
 using N8T.Infrastructure.App.Dtos;
 using N8T.Infrastructure.App.Events.ShoppingCart;
@@ -11,12 +10,12 @@ namespace ShoppingCartService.Application.Checkout
 {
     public class CheckOutHandler : IRequestHandler<CheckOutQuery, CartDto>
     {
-        private readonly DaprClient _daprClient;
+        private readonly IClientServices _client;
         private readonly ISecurityContextAccessor _securityContextAccessor;
 
-        public CheckOutHandler(DaprClient daprClient, ISecurityContextAccessor securityContextAccessor)
+        public CheckOutHandler(IClientServices client, ISecurityContextAccessor securityContextAccessor)
         {
-            _daprClient = daprClient ?? throw new ArgumentNullException(nameof(daprClient));
+            _client = client ?? throw new ArgumentNullException(nameof(client));
             _securityContextAccessor = securityContextAccessor ?? throw new ArgumentNullException(nameof(securityContextAccessor));
         }
 
@@ -24,12 +23,12 @@ namespace ShoppingCartService.Application.Checkout
         {
             var currentUserId = _securityContextAccessor.UserId;
 
-            var cart = await _daprClient.GetStateEntryAsync<CartDto>("statestore", $"shopping-cart-{currentUserId}",
+            var cart = await _client.GetStateEntryAsync<CartDto>("statestore", $"shopping-cart-{currentUserId}",
                 cancellationToken: cancellationToken);
 
             cart.Value.UserId = currentUserId;
-            var @event = new ShoppingCartCheckedOut {Cart = cart.Value};
-            await _daprClient.PublishEventAsync("pubsub", "processing-order", @event, cancellationToken);
+            var @event = new ShoppingCartCheckedOut { Cart = cart.Value };
+            await _client.PublishEventAsync("pubsub", "processing-order", @event, cancellationToken);
 
             cart.Value = new CartDto();
             await cart.SaveAsync(cancellationToken: cancellationToken);

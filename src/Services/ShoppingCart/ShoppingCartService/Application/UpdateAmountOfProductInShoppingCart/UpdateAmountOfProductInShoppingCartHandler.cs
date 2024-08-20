@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Dapr.Client;
 using MediatR;
 using N8T.Domain;
 using N8T.Infrastructure.App.Dtos;
@@ -14,19 +13,19 @@ namespace ShoppingCartService.Application.UpdateAmountOfProductInShoppingCart
 {
     public class UpdateAmountOfProductInShoppingCartHandler : IRequestHandler<UpdateAmountOfProductInShoppingCartQuery, CartDto>
     {
-        private readonly DaprClient _daprClient;
+        private readonly IClientServices _client;
         private readonly IProductCatalogGateway _productCatalogGateway;
         private readonly IPromoGateway _promoGateway;
         private readonly IShippingGateway _shippingGateway;
         private readonly ISecurityContextAccessor _securityContextAccessor;
 
-        public UpdateAmountOfProductInShoppingCartHandler(DaprClient daprClient,
+        public UpdateAmountOfProductInShoppingCartHandler(IClientServices _client,
             IProductCatalogGateway productCatalogGateway,
             IPromoGateway promoGateway,
             IShippingGateway shippingGateway,
             ISecurityContextAccessor securityContextAccessor)
         {
-            _daprClient = daprClient ?? throw new ArgumentNullException(nameof(daprClient));
+            _client = _client ?? throw new ArgumentNullException(nameof(_client));
             _productCatalogGateway = productCatalogGateway ?? throw new ArgumentNullException(nameof(productCatalogGateway));
             _promoGateway = promoGateway ?? throw new ArgumentNullException(nameof(promoGateway));
             _shippingGateway = shippingGateway ?? throw new ArgumentNullException(nameof(shippingGateway));
@@ -37,7 +36,7 @@ namespace ShoppingCartService.Application.UpdateAmountOfProductInShoppingCart
         {
             var currentUserId = _securityContextAccessor.UserId;
 
-            var cart = await _daprClient.GetStateEntryAsync<CartDto>("statestore", $"shopping-cart-{currentUserId}",
+            var cart = await _client.GetStateEntryAsync<CartDto>("statestore", $"shopping-cart-{currentUserId}",
                 cancellationToken: cancellationToken);
 
             if (cart.Value is null)
