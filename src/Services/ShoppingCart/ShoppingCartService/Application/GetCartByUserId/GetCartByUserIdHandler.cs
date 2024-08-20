@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using MediatR;
 using N8T.Infrastructure.App.Dtos;
 using N8T.Infrastructure.Auth;
+using N8T.Infrastructure.ClientServices;
 
 namespace ShoppingCartService.Application.GetCartByUserId
 {

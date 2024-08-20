@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using N8T.Infrastructure.App.Dtos;
 using N8T.Infrastructure.App.Requests.Inventory;
+using N8T.Infrastructure.ClientServices;
 using ProductCatalogService.Domain.Exception;
 using ProductCatalogService.Domain.Gateway;
 

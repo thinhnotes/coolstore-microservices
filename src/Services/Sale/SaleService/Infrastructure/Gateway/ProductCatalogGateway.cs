@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using N8T.Infrastructure.App.Dtos;
 using N8T.Infrastructure.App.Requests.ProductCatalog;
+using N8T.Infrastructure.ClientServices;
 using SaleService.Domain.Gateway;
 
 namespace SaleService.Infrastructure.Gateway

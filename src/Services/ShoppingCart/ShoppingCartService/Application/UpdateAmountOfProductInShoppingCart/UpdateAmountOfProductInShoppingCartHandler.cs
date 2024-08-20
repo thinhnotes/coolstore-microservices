@@ -6,6 +6,7 @@ using MediatR;
 using N8T.Domain;
 using N8T.Infrastructure.App.Dtos;
 using N8T.Infrastructure.Auth;
+using N8T.Infrastructure.ClientServices;
 using ShoppingCartService.Domain.Gateway;
 using ShoppingCartService.Infrastructure.Extensions;
 

@@ -1,6 +1,7 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using N8T.Infrastructure.ClientServices;
 
 namespace ShoppingCartService.Api.Subscriber
 {

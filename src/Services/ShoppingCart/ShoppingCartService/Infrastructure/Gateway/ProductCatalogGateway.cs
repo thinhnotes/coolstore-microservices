@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using N8T.Domain;
 using N8T.Infrastructure.App.Dtos;
 using N8T.Infrastructure.App.Requests.ProductCatalog;
+using N8T.Infrastructure.ClientServices;
 using ShoppingCartService.Domain.Gateway;
 
 namespace ShoppingCartService.Infrastructure.Gateway

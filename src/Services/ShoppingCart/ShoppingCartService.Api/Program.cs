@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using N8T.Infrastructure;
 using N8T.Infrastructure.Auth;
-using N8T.Infrastructure.Dapr;
+using N8T.Infrastructure.ClientServices;
 using N8T.Infrastructure.OTel;
 using N8T.Infrastructure.Tye;
 using N8T.Infrastructure.Validator;
