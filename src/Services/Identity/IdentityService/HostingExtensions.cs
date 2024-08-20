@@ -1,11 +1,10 @@
-using IdentityServer4;
-using IdentityServer4.Services;
-using IdentityServerHost.Quickstart.UI;
+using Duende.IdentityServer;
+using Duende.IdentityServer.Services;
+using IdentityService;
 using IdentityService.Custom;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Serilog;
 
 namespace IdentityService
 {
@@ -13,18 +12,18 @@ namespace IdentityService
     {
         public static WebApplication ConfigureServices(this WebApplicationBuilder builder)
         {
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddRazorPages();
 
             var isBuilder = builder.Services.AddIdentityServer(options =>
-            {
-                options.Events.RaiseErrorEvents = true;
-                options.Events.RaiseInformationEvents = true;
-                options.Events.RaiseFailureEvents = true;
-                options.Events.RaiseSuccessEvents = true;
+                {
+                    options.Events.RaiseErrorEvents = true;
+                    options.Events.RaiseInformationEvents = true;
+                    options.Events.RaiseFailureEvents = true;
+                    options.Events.RaiseSuccessEvents = true;
 
-                // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
-                options.EmitStaticAudienceClaim = true;
-            })
+                    // see https://docs.duendesoftware.com/identityserver/v6/fundamentals/resources/
+                    options.EmitStaticAudienceClaim = true;
+                })
                 .AddTestUsers(TestUsers.Users);
 
             // in-memory, code config
@@ -32,7 +31,7 @@ namespace IdentityService
             isBuilder.AddInMemoryApiScopes(Config.ApiScopes);
             isBuilder.AddInMemoryClients(Config.Clients);
 
-            // not recommended for production - you need to store your key material somewhere secure
+			// not recommended for production - you need to store your key material somewhere secure
             isBuilder.AddDeveloperSigningCredential();
 
             builder.Services.Configure<CookiePolicyOptions>(options =>
@@ -41,6 +40,19 @@ namespace IdentityService
                 options.OnAppendCookie = cookieContext => CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
                 options.OnDeleteCookie = cookieContext => CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
             });
+
+            // if you want to use server-side sessions: https://blog.duendesoftware.com/posts/20220406_session_management/
+            // then enable it
+            //isBuilder.AddServerSideSessions();
+            //
+            // and put some authorization on the admin/management pages
+            //builder.Services.AddAuthorization(options =>
+            //       options.AddPolicy("admin",
+            //           policy => policy.RequireClaim("sub", "1"))
+            //   );
+            //builder.Services.Configure<RazorPagesOptions>(options =>
+            //    options.Conventions.AuthorizeFolder("/ServerSideSessions", "admin"));
+
 
             builder.Services.AddAuthentication()
                 .AddGoogle(options =>
@@ -62,13 +74,14 @@ namespace IdentityService
 
         public static WebApplication ConfigurePipeline(this WebApplication app)
         {
-            //if (Environment.IsDevelopment())
-            //{
-            //    app.UseDeveloperExceptionPage();
-            //}
+            app.UseSerilogRequestLogging();
+
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
 
             app.UseStaticFiles();
-
             app.UseRouting();
             app.UseCookiePolicy();
             app.UseIdentityServer();
@@ -81,6 +94,8 @@ namespace IdentityService
 
                 endpoints.MapDefaultControllerRoute();
             });
+            app.MapRazorPages().RequireAuthorization();
+
             return app;
         }
 
@@ -94,3 +109,4 @@ namespace IdentityService
         }
     }
 }
+
