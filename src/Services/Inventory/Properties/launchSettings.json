@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "VND.CoolStore.Services.Inventory": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:33621;http://localhost:33623"
+    }
+  }
+}

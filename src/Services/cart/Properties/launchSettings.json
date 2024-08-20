@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "VND.CoolStore.Services.Cart": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:33629;http://localhost:33630"
+    }
+  }
+}
