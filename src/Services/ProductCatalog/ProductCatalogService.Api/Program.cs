@@ -23,9 +23,8 @@ builder.Services.AddHttpContextAccessor()
     .AddCustomMediatR<Anchor>()
     .AddCustomValidators<Anchor>()
     .AddCustomDbContext<MainDbContext, Anchor>(builder.Configuration.GetConnectionString("postgres"))
-    .AddCustomDaprClient()
-    .AddControllers()
-.AddDapr();
+    .AddCustomClientServices()
+    .AddControllers();
 
 builder.Services.AddHealthChecks()
     .AddNpgSql(builder.Configuration.GetConnectionString("postgres"));

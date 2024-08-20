@@ -5,11 +5,12 @@ namespace N8T.Infrastructure.Dapr
 {
     public static class Extensions
     {
-        public static IServiceCollection AddCustomDaprClient(this IServiceCollection services)
+        public static IServiceCollection AddCustomClientServices(this IServiceCollection services)
         {
             var options = new JsonSerializerOptions()
             {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase, PropertyNameCaseInsensitive = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                PropertyNameCaseInsensitive = true,
             };
 
             services.AddSingleton(options);
@@ -18,6 +19,8 @@ namespace N8T.Infrastructure.Dapr
             {
                 client.UseJsonSerializationOptions(options);
             });
+
+            services.AddScoped<IClientServices, ClientServices>();
 
             return services;
         }

@@ -20,9 +20,8 @@ bool isRunOnTye = builder.Configuration.IsRunOnTye();
 builder.Services.AddHttpContextAccessor()
     .AddCustomMediatR<Anchor>()
     .AddCustomValidators<Anchor>()
-    .AddCustomDaprClient()
-    .AddControllers()
-    .AddDapr();
+    .AddCustomClientServices()
+    .AddControllers();
 
 builder.Services.AddHealthChecks();
 
