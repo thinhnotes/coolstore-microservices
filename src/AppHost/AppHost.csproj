@@ -28,7 +28,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BFFs\WebApiGateway\WebApiGateway.csproj" />
+    <ProjectReference Include="..\Services\Identity\IdentityService\IdentityService.csproj" />
     <ProjectReference Include="..\Services\Inventory\InventoryService.Api\InventoryService.Api.csproj" />
+    <ProjectReference Include="..\Services\ProductCatalog\ProductCatalogService.Api\ProductCatalogService.Api.csproj" />
+    <ProjectReference Include="..\Services\Sale\SaleService.Api\SaleService.Api.csproj" />
+    <ProjectReference Include="..\Services\ShoppingCart\ShoppingCartService.Api\ShoppingCartService.Api.csproj" />
   </ItemGroup>
 
 </Project>

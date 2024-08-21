@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Configuration;
@@ -9,6 +10,7 @@ using N8T.Infrastructure.Auth;
 using N8T.Infrastructure.ClientServices;
 using N8T.Infrastructure.EfCore;
 using N8T.Infrastructure.OTel;
+using N8T.Infrastructure.Swagger;
 using N8T.Infrastructure.Tye;
 using N8T.Infrastructure.Validator;
 using SaleService;
@@ -55,10 +57,16 @@ builder.Services.AddCustomOtelWithZipkin(builder.Configuration,
             : o.Endpoint;
     });
 
+builder.Services.AddOpenApi(builder.Configuration.GetValue<string>("Authn__Authority"), new Dictionary<string, string>
+{
+    {"scope1", "Demo API - full access"}
+});
+
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
+    app.UseOpenApi();
 }
 
 app.UseRouting();

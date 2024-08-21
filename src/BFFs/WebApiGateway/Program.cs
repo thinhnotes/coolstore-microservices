@@ -6,8 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.ReverseProxy.Service;
 using WebApiGateway;
 using N8T.Infrastructure.OTel;
-using Microsoft.Extensions.Configuration;
-using N8T.Infrastructure.Tye;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Http;
 
@@ -21,11 +19,8 @@ builder.Services.AddCors(options =>
         policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
     });
 });
-bool isRunOnTye = builder.Configuration.IsRunOnTye();
 // inventory
-var inventoryUrl = isRunOnTye
-    ? $"{builder.Configuration.GetServiceUri("inventoryapp")?.AbsoluteUri}"
-    : builder.Configuration.GetValue<string>("Services:inventoryapp");
+var inventoryUrl = "https+http://inventory-api";
 
 var invRoute = new ProxyRoute
 {
@@ -56,10 +51,7 @@ var invCluster = new Cluster
 };
 
 // product catalog
-var productCatalogUrl = isRunOnTye
-    ? $"{builder.Configuration.GetServiceUri("productcatalogapp")?.AbsoluteUri}"
-    : builder.Configuration.GetValue<string>("Services:productcatalogapp");
-
+var productCatalogUrl = "https+http://product-api";
 var prodRoute = new ProxyRoute
 {
     RouteId = "prod",
@@ -89,9 +81,7 @@ var prodCluster = new Cluster
 };
 
 // shopping cart
-var shoppingCartUrl = isRunOnTye
-    ? $"{builder.Configuration.GetServiceUri("shoppingcartapp")?.AbsoluteUri}"
-    : builder.Configuration.GetValue<string>("Services:shoppingcartapp");
+var shoppingCartUrl = "https+http://shoppingcart-api";
 
 var cartRoute = new ProxyRoute
 {
@@ -123,9 +113,7 @@ var cartCluster = new Cluster
 
 
 // sale
-var saleUrl = isRunOnTye
-    ? $"{builder.Configuration.GetServiceUri("saleapp")?.AbsoluteUri}"
-    : builder.Configuration.GetValue<string>("Services:saleapp");
+var saleUrl = "https+http://sale-api";
 
 var saleRoute = new ProxyRoute
 {
@@ -176,21 +164,21 @@ builder.Services.AddReverseProxy()
     .LoadFromMemory(routes, clusters);
 
 builder.Services.AddHealthChecks()
-    .AddUrlGroup(new Uri(System.IO.Path.Combine(inventoryUrl, "healthz")),
+    .AddUrlGroup(new Uri($"{inventoryUrl}/healthz"),
         name: "inventoryapp-check", tags: new[] { "inventoryapp" })
-    .AddUrlGroup(new Uri(System.IO.Path.Combine(productCatalogUrl, "healthz")),
+    .AddUrlGroup(new Uri($"{productCatalogUrl}/healthz"),
         name: "productcatalogapp-check", tags: new[] { "productcatalogapp" })
-    .AddUrlGroup(new Uri(System.IO.Path.Combine(shoppingCartUrl, "healthz")),
+    .AddUrlGroup(new Uri($"{shoppingCartUrl}/healthz"),
         name: "shoppingcartapp-check", tags: new[] { "shoppingcartapp" })
-    .AddUrlGroup(new Uri(System.IO.Path.Combine(saleUrl, "healthz")),
+    .AddUrlGroup(new Uri($"{saleUrl}/healthz"),
         name: "saleapp-check", tags: new[] { "saleapp" });
 
 builder.Services.AddCustomOtelWithZipkin(builder.Configuration,
     o =>
     {
-        o.Endpoint = isRunOnTye
-            ? new Uri($"http://{builder.Configuration.GetServiceUri("zipkin")?.DnsSafeHost}:9411/api/v2/spans")
-            : o.Endpoint;
+        //o.Endpoint = isRunOnTye
+        //    ? new Uri($"http://{builder.Configuration.GetServiceUri("zipkin")?.DnsSafeHost}:9411/api/v2/spans")
+        //    : o.Endpoint;
     });
 
 

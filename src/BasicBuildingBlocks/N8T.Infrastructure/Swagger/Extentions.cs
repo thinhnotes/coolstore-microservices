@@ -37,15 +37,9 @@ namespace N8T.Infrastructure.Swagger
             return services;
         }
 
-        public static IApplicationBuilder UseOpenApi(this IApplicationBuilder app, string clientId)
+        public static IApplicationBuilder UseOpenApi(this IApplicationBuilder app)
         {
             app.UseSwagger();
-            app.UseSwaggerUI(options =>
-            {
-                options.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-
-                options.OAuthClientId(clientId);
-            });
             return app;
         }
     }

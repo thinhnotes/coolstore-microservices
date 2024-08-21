@@ -15,6 +15,7 @@ using N8T.Infrastructure.Tye;
 using N8T.Infrastructure.Validator;
 using N8T.Infrastructure.Swagger;
 using System.Collections.Generic;
+using Asp.Versioning;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -44,22 +45,34 @@ builder.Services.AddCustomOtelWithZipkin(builder.Configuration,
             : o.Endpoint;
     });
 
-builder.Services.AddOpenApi("https://localhost:5001", new Dictionary<string, string>
-            {
-                {"scope1", "Demo API - full access"}
-            });
+builder.Services.AddOpenApi(builder.Configuration.GetValue<string>("Authn__Authority"), new Dictionary<string, string>
+{
+    {"scope1", "Demo API - full access"}
+});
 
 var app = builder.Build();
+
+var apiVersionSet = app.NewApiVersionSet()
+    .HasApiVersion(new ApiVersion(1))
+    .ReportApiVersions()
+    .Build();
+
+var versionedGroup = app
+    .MapGroup("api/v{version:apiVersion}")
+    .WithApiVersionSet(apiVersionSet);
+
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
 }
 app.UseRouting();
-//app.UseOpenApi("inventory_api_swagger");
 
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseOpenApi();
+
+app.MapEndpoints(versionedGroup);
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapHealthChecks("/healthz", new HealthCheckOptions { Predicate = _ => true });

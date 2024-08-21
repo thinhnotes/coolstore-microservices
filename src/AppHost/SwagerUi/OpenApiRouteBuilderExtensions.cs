@@ -37,6 +37,9 @@ internal static class OpenApiRouteBuilderExtensions
                     ],
                     layout: "StandaloneLayout",
                 })
+                ui.initOAuth({
+                  clientId: "{{resourceName}}"
+                })
                 window.ui = ui
             }
         </script>
