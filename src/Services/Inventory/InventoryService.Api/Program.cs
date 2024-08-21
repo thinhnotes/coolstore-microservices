@@ -55,7 +55,7 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 app.UseRouting();
-app.UseOpenApi("inventory_api_swagger");
+//app.UseOpenApi("inventory_api_swagger");
 
 app.UseAuthentication();
 app.UseAuthorization();

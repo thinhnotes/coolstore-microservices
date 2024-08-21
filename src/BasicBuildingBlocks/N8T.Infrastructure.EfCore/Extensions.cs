@@ -77,7 +77,7 @@ namespace N8T.Infrastructure.EfCore
 
             foreach (var file in files
                 .Where(f => f.StartsWith(filePrefix) && f.EndsWith(".sql"))
-                .Select(f => new {PhysicalFile = f, LogicalFile = f.Replace(filePrefix, string.Empty)})
+                .Select(f => new { PhysicalFile = f, LogicalFile = f.Replace(filePrefix, string.Empty) })
                 .OrderBy(f => f.LogicalFile))
             {
                 using var stream = assembly.GetManifestResourceStream(file.PhysicalFile);

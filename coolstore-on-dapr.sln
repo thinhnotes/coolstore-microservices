@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30615.102
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35208.52
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "N8T.Domain", "src\BasicBuildingBlocks\N8T.Domain\N8T.Domain.csproj", "{FECC516E-9515-4D8B-8830-F84402A4ADC1}"
 EndProject
@@ -59,9 +59,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "__", "__", "{4083ACF6-1BAC-
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sale", "Sale", "{0818AFB5-6126-4C6D-8496-568A468AA881}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaleService", "src\Services\Sale\SaleService\SaleService.csproj", "{F1579313-6888-40DD-9EC4-4A165A783D3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SaleService", "src\Services\Sale\SaleService\SaleService.csproj", "{F1579313-6888-40DD-9EC4-4A165A783D3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaleService.Api", "src\Services\Sale\SaleService.Api\SaleService.Api.csproj", "{F9512D94-F1E9-4781-A12C-D045B92427F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SaleService.Api", "src\Services\Sale\SaleService.Api\SaleService.Api.csproj", "{F9512D94-F1E9-4781-A12C-D045B92427F3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppHost", "src\AppHost\AppHost.csproj", "{2379355B-9267-486A-B997-9CE68886BA74}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -129,6 +131,10 @@ Global
 		{F9512D94-F1E9-4781-A12C-D045B92427F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9512D94-F1E9-4781-A12C-D045B92427F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9512D94-F1E9-4781-A12C-D045B92427F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2379355B-9267-486A-B997-9CE68886BA74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2379355B-9267-486A-B997-9CE68886BA74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2379355B-9267-486A-B997-9CE68886BA74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2379355B-9267-486A-B997-9CE68886BA74}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
