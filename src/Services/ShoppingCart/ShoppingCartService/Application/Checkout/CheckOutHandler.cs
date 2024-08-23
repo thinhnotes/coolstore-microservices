@@ -32,7 +32,7 @@ namespace ShoppingCartService.Application.Checkout
             await _client.PublishEventAsync("pubsub", "processing-order", @event, cancellationToken);
 
             cart = new CartDto();
-            _client.SaveStateAsync("statestore", "shopping-cart-{currentUserId}", cart,
+            await _client.SaveStateAsync("statestore", "shopping-cart-{currentUserId}", cart,
                 cancellationToken: cancellationToken);
 
             return cart;

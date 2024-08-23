@@ -20,13 +20,13 @@ namespace ShoppingCartService.Application.UpdateAmountOfProductInShoppingCart
         private readonly IShippingGateway _shippingGateway;
         private readonly ISecurityContextAccessor _securityContextAccessor;
 
-        public UpdateAmountOfProductInShoppingCartHandler(IClientServices _client,
+        public UpdateAmountOfProductInShoppingCartHandler(IClientServices client,
             IProductCatalogGateway productCatalogGateway,
             IPromoGateway promoGateway,
             IShippingGateway shippingGateway,
             ISecurityContextAccessor securityContextAccessor)
         {
-            _client = _client ?? throw new ArgumentNullException(nameof(_client));
+            _client = client ?? throw new ArgumentNullException(nameof(client));
             _productCatalogGateway = productCatalogGateway ?? throw new ArgumentNullException(nameof(productCatalogGateway));
             _promoGateway = promoGateway ?? throw new ArgumentNullException(nameof(promoGateway));
             _shippingGateway = shippingGateway ?? throw new ArgumentNullException(nameof(shippingGateway));

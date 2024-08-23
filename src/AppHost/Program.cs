@@ -49,7 +49,7 @@ var shoppingCartApi = builder.AddProject<Projects.ShoppingCartService_Api>("shop
     //.WaitFor(postgres)
     .WithSwaggerUI();
 
-builder.AddProject<Projects.WebApiGateway>("webapigateway-api")
+var webapigatewayApi = builder.AddProject<Projects.WebApiGateway>("webapigateway-api")
     .WaitFor(inventoryApi)
     .WaitFor(productApi)
     .WaitFor(saleApi)
@@ -59,4 +59,5 @@ builder.AddProject<Projects.WebApiGateway>("webapigateway-api")
     .WithReference(saleApi)
     .WithReference(shoppingCartApi);
 
+//builder.AddDockerfile("web", "../../.", "src/web/Dockerfile");
 builder.Build().Run();

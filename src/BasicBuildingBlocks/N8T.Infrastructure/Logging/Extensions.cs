@@ -2,25 +2,32 @@ using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyModel;
 using Serilog;
 using Serilog.Configuration;
 using Serilog.Formatting.Elasticsearch;
+using Serilog.Settings.Configuration;
 
 namespace N8T.Infrastructure.Logging
 {
     public static class Extensions
     {
-        public static void CreateLoggerConfiguration(this IServiceProvider serviceProvider,
+        public static void CreateLoggerConfiguration<Type>(this IServiceProvider serviceProvider,
             bool isRunOnTye = true)
         {
-            if (isRunOnTye) return;
+            if (isRunOnTye)
+                return;
 
             var httpContext = serviceProvider.GetService<IHttpContextAccessor>();
             var config = serviceProvider.GetService<IConfiguration>();
             var fluentdEnabled = config.GetValue("Logging:FluentdEnabled", false);
 
+            var functionDependencyContext = DependencyContext.Load(typeof(Type).Assembly);
+
+            var options = new ConfigurationReaderOptions(functionDependencyContext) { SectionName = "Logging" };
+
             var loggerConfig = new LoggerConfiguration()
-                .ReadFrom.Configuration(config, "Logging")
+                .ReadFrom.Configuration(config, options)
                 .Enrich.FromLogContext()
                 .Enrich.WithProperty("Application", config.GetValue<string>("App:Name"))
                 .Enrich.WithTraceId(httpContext);
@@ -48,7 +55,8 @@ namespace N8T.Infrastructure.Logging
             if (loggerEnrichmentConfiguration == null)
                 throw new ArgumentNullException(nameof(loggerEnrichmentConfiguration));
 
-            if (httpContextAccessor == null) throw new ArgumentNullException(nameof(httpContextAccessor));
+            if (httpContextAccessor == null)
+                throw new ArgumentNullException(nameof(httpContextAccessor));
 
             return loggerEnrichmentConfiguration.With(new TraceIdEnricher(httpContextAccessor));
         }

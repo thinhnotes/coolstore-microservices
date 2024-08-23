@@ -13,9 +13,9 @@ namespace ShoppingCartService.Application.GetCartByUserId
         private readonly IClientServices _client;
         private readonly ISecurityContextAccessor _securityContextAccessor;
 
-        public GetCartByUserIdHandler(IClientServices _client, ISecurityContextAccessor securityContextAccessor)
+        public GetCartByUserIdHandler(IClientServices client, ISecurityContextAccessor securityContextAccessor)
         {
-            _client = _client ?? throw new ArgumentNullException(nameof(_client));
+            _client = client ?? throw new ArgumentNullException(nameof(client));
             _securityContextAccessor = securityContextAccessor ?? throw new ArgumentNullException(nameof(securityContextAccessor));
         }
 
