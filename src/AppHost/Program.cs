@@ -18,6 +18,7 @@ var inventoryApi = builder.AddProject<Projects.InventoryService_Api>("inventory-
     //.WaitFor(postgres)
     .WithEnvironment("ConnectionStrings__postgres", $"Server={hostInfra};Port=5434;Database=postgres;User Id=postgres;Password=P@ssw0rd")
     .WithEnvironment("ConnectionStrings__redis", $"{hostInfra}:6377")
+    .WithEnvironment("OtelZipkin__Endpoint", $"http://{hostInfra}:9411/api/v2/spans")
     .WithSwaggerUI();
 
 var productApi = builder.AddProject<Projects.ProductCatalogService_Api>("product-api")
@@ -26,6 +27,7 @@ var productApi = builder.AddProject<Projects.ProductCatalogService_Api>("product
     //.WaitFor(postgres)
     .WithEnvironment("ConnectionStrings__postgres", $"Server={hostInfra};Port=5434;Database=postgres;User Id=postgres;Password=P@ssw0rd")
     .WithEnvironment("ConnectionStrings__redis", $"{hostInfra}:6377")
+    .WithEnvironment("OtelZipkin__Endpoint", $"http://{hostInfra}:9411/api/v2/spans")
     .WithReference(inventoryApi)
     .WithSwaggerUI();
 
@@ -34,6 +36,7 @@ var saleApi = builder.AddProject<Projects.SaleService_Api>("sale-api")
     .WithReference(identityApi)
     .WithEnvironment("ConnectionStrings__postgres", $"Server={hostInfra};Port=5434;Database=postgres;User Id=postgres;Password=P@ssw0rd")
     .WithEnvironment("ConnectionStrings__redis", $"{hostInfra}:6377")
+    .WithEnvironment("OtelZipkin__Endpoint", $"http://{hostInfra}:9411/api/v2/spans")
     //.WaitFor(postgres)
     .WithSwaggerUI();
 
@@ -42,27 +45,18 @@ var shoppingCartApi = builder.AddProject<Projects.ShoppingCartService_Api>("shop
     .WithReference(identityApi)
     .WithEnvironment("ConnectionStrings__postgres", $"Server={hostInfra};Port=5434;Database=postgres;User Id=postgres;Password=P@ssw0rd")
     .WithEnvironment("ConnectionStrings__redis", $"{hostInfra}:6377")
+    .WithEnvironment("OtelZipkin__Endpoint", $"http://{hostInfra}:9411/api/v2/spans")
     //.WaitFor(postgres)
     .WithSwaggerUI();
 
-//builder.AddProject<Projects.WebApiGateway>("webapigateway-api")
-//    .WaitFor(inventoryApi)
-//    .WaitFor(productApi)
-//    .WaitFor(saleApi)
-//    .WaitFor(shoppingCartApi)
-//    .WithReference(inventoryApi)
-//    .WithReference(productApi)
-//    .WithReference(saleApi)
-//    .WithReference(shoppingCartApi);
-
-//It need check more
-builder.AddYarp("webapigateway-api")
+builder.AddProject<Projects.WebApiGateway>("webapigateway-api")
+    .WaitFor(inventoryApi)
+    .WaitFor(productApi)
+    .WaitFor(saleApi)
+    .WaitFor(shoppingCartApi)
     .WithReference(inventoryApi)
     .WithReference(productApi)
     .WithReference(saleApi)
-    .WithReference(shoppingCartApi)
-    .LoadFromConfiguration("ReverseProxy");
-
-
+    .WithReference(shoppingCartApi);
 
 builder.Build().Run();

@@ -1,16 +1,26 @@
-using System.Collections.Generic;
 using System;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.ReverseProxy.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.ReverseProxy.Service;
-using WebApiGateway;
 using N8T.Infrastructure.OTel;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
+//builder.Services.AddServiceDiscovery();
+//builder.Services.ConfigureHttpClientDefaults(http =>
+//{
+//    http.AddServiceDiscovery();
+//});
+
+
+builder.Services.AddServiceDiscovery();
+
+builder.Services.ConfigureHttpClientDefaults(http =>
+{
+    // Turn on service discovery by default
+    http.AddServiceDiscovery();
+});
 
 builder.Services.AddCors(options =>
 {
@@ -19,149 +29,12 @@ builder.Services.AddCors(options =>
         policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
     });
 });
-// inventory
 var inventoryUrl = "https+http://inventory-api";
-
-var invRoute = new ProxyRoute
-{
-    RouteId = "inv",
-    ClusterId = "inv-svc-cluster",
-    Match =
-                {
-                    Path = "/inv/{**catch-all}"
-                },
-    Transforms = new List<IDictionary<string, string>>()
-};
-
-invRoute.AddTransformXForwarded();
-invRoute.AddTransformPathRemovePrefix("/inv");
-
-var invCluster = new Cluster
-{
-    Id = "inv-svc-cluster",
-    Destinations =
-                {
-                    {
-                        "inv-svc-cluster/destination1", new Destination
-                        {
-                            Address = inventoryUrl
-                        }
-                    }
-                }
-};
-
-// product catalog
 var productCatalogUrl = "https+http://product-api";
-var prodRoute = new ProxyRoute
-{
-    RouteId = "prod",
-    ClusterId = "prod-svc-cluster",
-    Match =
-                {
-                    Path = "/prod/{**catch-all}"
-                },
-    Transforms = new List<IDictionary<string, string>>()
-};
-
-prodRoute.AddTransformXForwarded();
-prodRoute.AddTransformPathRemovePrefix("/prod");
-
-var prodCluster = new Cluster
-{
-    Id = "prod-svc-cluster",
-    Destinations =
-                {
-                    {
-                        "prod-svc-cluster/destination1", new Destination
-                        {
-                            Address = productCatalogUrl
-                        }
-                    }
-                }
-};
-
-// shopping cart
 var shoppingCartUrl = "https+http://shoppingcart-api";
-
-var cartRoute = new ProxyRoute
-{
-    RouteId = "cart",
-    ClusterId = "cart-svc-cluster",
-    Match =
-                {
-                    Path = "/cart/{**catch-all}"
-                },
-    Transforms = new List<IDictionary<string, string>>()
-};
-
-cartRoute.AddTransformXForwarded();
-cartRoute.AddTransformPathRemovePrefix("/cart");
-
-var cartCluster = new Cluster
-{
-    Id = "cart-svc-cluster",
-    Destinations =
-                {
-                    {
-                        "cart-svc-cluster/destination1", new Destination
-                        {
-                            Address = shoppingCartUrl
-                        }
-                    }
-                }
-};
-
-
-// sale
 var saleUrl = "https+http://sale-api";
 
-var saleRoute = new ProxyRoute
-{
-    RouteId = "sale",
-    ClusterId = "sale-svc-cluster",
-    Match =
-                {
-                    Path = "/sale/{**catch-all}"
-                },
-    Transforms = new List<IDictionary<string, string>>()
-};
-
-saleRoute.AddTransformXForwarded();
-saleRoute.AddTransformPathRemovePrefix("/sale");
-
-var saleCluster = new Cluster
-{
-    Id = "sale-svc-cluster",
-    Destinations =
-                {
-                    {
-                        "sale-svc-cluster/destination1", new Destination
-                        {
-                            Address = saleUrl
-                        }
-                    }
-                }
-};
-
-// configure
-var routes = new[]
-{
-                invRoute,
-                prodRoute,
-                cartRoute,
-                saleRoute
-            };
-
-var clusters = new[]
-{
-                invCluster,
-                prodCluster,
-                cartCluster,
-                saleCluster
-            };
-
-builder.Services.AddReverseProxy()
-    .LoadFromMemory(routes, clusters);
+builder.Services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSection("ReverseProxy")).AddServiceDiscoveryDestinationResolver();
 
 builder.Services.AddHealthChecks()
     .AddUrlGroup(new Uri($"{inventoryUrl}/healthz"),
@@ -191,34 +64,26 @@ app.UseCors("api");
 
 app.UseRouting();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapHealthChecks("/healthz",
+app.MapHealthChecks("/healthz",
         new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions { Predicate = _ => true });
 
-    endpoints.MapHealthChecks("/liveness",
+app.MapHealthChecks("/liveness",
         new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
         {
             Predicate = r => r.Name.Contains("self")
         });
 
-    endpoints.MapGet("/", async context =>
-    {
-        context.Response.ContentType = "text/html";
-        await context.Response.WriteAsync("<h3>WebApiGateway</h3>");
-        await context.Response.WriteAsync("<br>");
-        await context.Response.WriteAsync("<a href='/inv/info'>Inventory&nbsp;|&nbsp;</a>");
-        await context.Response.WriteAsync("<a href='/prod/info'>Product Catalog&nbsp;|&nbsp;</a>");
-        await context.Response.WriteAsync("<a href='/cart/info'>Shopping Cart&nbsp;|&nbsp;</a>");
-        await context.Response.WriteAsync("<a href='/sale/info'>Sale&nbsp;</a>");
-    });
-
-    endpoints.MapReverseProxy(proxyPipeline =>
-    {
-        proxyPipeline.UseAffinitizedDestinationLookup();
-        proxyPipeline.UseProxyLoadBalancing();
-        proxyPipeline.UseRequestAffinitizer();
-    });
+app.MapGet("/", async context =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.WriteAsync("<h3>WebApiGateway</h3>");
+    await context.Response.WriteAsync("<br>");
+    await context.Response.WriteAsync("<a href='/inv/info'>Inventory&nbsp;|&nbsp;</a>");
+    await context.Response.WriteAsync("<a href='/prod/info'>Product Catalog&nbsp;|&nbsp;</a>");
+    await context.Response.WriteAsync("<a href='/cart/info'>Shopping Cart&nbsp;|&nbsp;</a>");
+    await context.Response.WriteAsync("<a href='/sale/info'>Sale&nbsp;</a>");
 });
+
+app.MapReverseProxy();
 
 app.Run();

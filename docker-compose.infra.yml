@@ -29,6 +29,17 @@ services:
       - DISABLE_COMMANDS=FLUSHDB,FLUSHALL,CONFIG
     ports:
       - "6377:6379"
+
+  ############################
+  # Zipkin component
+  ############################
+  zipkin:
+    image: openzipkin/zipkin:latest
+    container_name: zipkin
+    networks:
+      - coolstore-network
+    ports:
+      - "9411:9411"
       
 networks:
   coolstore-network:

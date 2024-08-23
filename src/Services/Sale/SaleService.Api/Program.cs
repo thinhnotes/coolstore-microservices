@@ -32,7 +32,7 @@ builder.Services.AddHttpContextAccessor()
 builder.Services.AddHealthChecks()
     .AddNpgSql(builder.Configuration.GetConnectionString("postgres"));
 
-builder.Services.AddCustomAuth<Anchor>(builder.Configuration,);
+builder.Services.AddCustomAuth<Anchor>(builder.Configuration);
 
 builder.Services.AddScoped<ISecurityContextAccessor, SecurityContextAccessor>();
 builder.Services.AddScoped<IUserGateway, UserGateway>();
