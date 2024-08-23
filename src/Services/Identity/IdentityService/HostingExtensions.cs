@@ -92,14 +92,13 @@ namespace IdentityService
             app.UseCookiePolicy();
             app.UseIdentityServer();
             app.UseAuthorization();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapHealthChecks("/healthz", new HealthCheckOptions { Predicate = _ => true });
-                endpoints.MapHealthChecks("/liveness",
-                    new HealthCheckOptions { Predicate = r => r.Name.Contains("self") });
 
-                endpoints.MapDefaultControllerRoute();
-            });
+            app.MapHealthChecks("/healthz", new HealthCheckOptions { Predicate = _ => true });
+            app.MapHealthChecks("/liveness",
+                new HealthCheckOptions { Predicate = r => r.Name.Contains("self") });
+
+            app.MapDefaultControllerRoute();
+
             app.MapRazorPages().RequireAuthorization();
 
             return app;

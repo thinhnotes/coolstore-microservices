@@ -17,7 +17,6 @@ using ShoppingCartService.Domain.Gateway;
 using ShoppingCartService.Infrastructure.Gateway;
 
 var builder = WebApplication.CreateBuilder(args);
-bool isRunOnTye = builder.Configuration.IsRunOnTye();
 
 builder.Services.AddHttpContextAccessor()
     .AddCustomMediatR<Anchor>()
@@ -27,29 +26,15 @@ builder.Services.AddHttpContextAccessor()
 
 builder.Services.AddHealthChecks();
 
-builder.Services.AddCustomAuth<Anchor>(builder.Configuration, options =>
-{
-    options.Authority = isRunOnTye
-        ? builder.Configuration.GetServiceUri("identityapp")?.AbsoluteUri
-        : options.Authority;
-
-    options.Audience = isRunOnTye
-        ? $"{builder.Configuration.GetServiceUri("identityapp")?.AbsoluteUri.TrimEnd('/')}/resources"
-    : options.Audience;
-});
+builder.Services.AddCustomAuth<Anchor>(builder.Configuration);
 
 builder.Services.AddScoped<ISecurityContextAccessor, SecurityContextAccessor>();
 builder.Services.AddScoped<IProductCatalogGateway, ProductCatalogGateway>();
 builder.Services.AddScoped<IPromoGateway, PromoGateway>();
 builder.Services.AddScoped<IShippingGateway, ShippingGateway>();
 
-builder.Services.AddCustomOtelWithZipkin(builder.Configuration,
-    o =>
-    {
-        o.Endpoint = isRunOnTye
-            ? new Uri($"http://{builder.Configuration.GetServiceUri("zipkin")?.DnsSafeHost}:9411/api/v2/spans")
-            : o.Endpoint;
-    });
+//check zipkin
+builder.Services.AddCustomOtelWithZipkin(builder.Configuration);
 builder.Services.AddOpenApi(builder.Configuration, new Dictionary<string, string>
 {
     {"scope1", "Demo API - full access"}
@@ -68,15 +53,11 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapHealthChecks("/healthz", new HealthCheckOptions { Predicate = _ => true });
-    endpoints.MapHealthChecks("/liveness",
-        new HealthCheckOptions { Predicate = r => r.Name.Contains("self") });
+app.MapHealthChecks("/healthz", new HealthCheckOptions { Predicate = _ => true });
+app.MapHealthChecks("/liveness",
+    new HealthCheckOptions { Predicate = r => r.Name.Contains("self") });
 
-    endpoints.MapControllers();
-});
+app.MapControllers();
 
-//app.ApplicationServices.CreateLoggerConfiguration(IsRunOnTye);
 
 app.Run();

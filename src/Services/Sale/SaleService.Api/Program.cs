@@ -21,7 +21,6 @@ using SaleService.Infrastructure.Gateway;
 using SaleService.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-bool isRunOnTye = builder.Configuration.IsRunOnTye();
 
 builder.Services.AddHttpContextAccessor()
     .AddCustomMediatR<Anchor>()
@@ -33,15 +32,7 @@ builder.Services.AddHttpContextAccessor()
 builder.Services.AddHealthChecks()
     .AddNpgSql(builder.Configuration.GetConnectionString("postgres"));
 
-builder.Services.AddCustomAuth<Anchor>(builder.Configuration, options =>
-{
-    options.Authority = isRunOnTye
-        ? builder.Configuration.GetServiceUri("identityapp")?.AbsoluteUri
-        : options.Authority;
-    options.Audience = isRunOnTye
-        ? $"{builder.Configuration.GetServiceUri("identityapp")?.AbsoluteUri.TrimEnd('/')}/resources"
-    : options.Audience;
-});
+builder.Services.AddCustomAuth<Anchor>(builder.Configuration,);
 
 builder.Services.AddScoped<ISecurityContextAccessor, SecurityContextAccessor>();
 builder.Services.AddScoped<IUserGateway, UserGateway>();
@@ -49,13 +40,8 @@ builder.Services.AddScoped<IInventoryGateway, InventoryGateway>();
 builder.Services.AddScoped<IProductCatalogGateway, ProductCatalogGateway>();
 builder.Services.AddScoped<IOrderValidationService, OrderValidationService>();
 
-builder.Services.AddCustomOtelWithZipkin(builder.Configuration,
-    o =>
-    {
-        o.Endpoint = isRunOnTye
-            ? new Uri($"http://{builder.Configuration.GetServiceUri("zipkin")?.DnsSafeHost}:9411/api/v2/spans")
-            : o.Endpoint;
-    });
+//Need check zipkin
+builder.Services.AddCustomOtelWithZipkin(builder.Configuration);
 
 builder.Services.AddOpenApi(builder.Configuration, new Dictionary<string, string>
 {

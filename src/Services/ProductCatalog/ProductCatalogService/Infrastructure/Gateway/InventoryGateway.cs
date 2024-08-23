@@ -26,7 +26,7 @@ namespace ProductCatalogService.Infrastructure.Gateway
             var data = new InventoryByIdsRequest {InventoryIds = ids};
 
             var inventories = await _client.InvokeMethodAsync<InventoryByIdsRequest, List<InventoryDto>>(
-                "inventoryapp", "get-inventories-by-ids",
+                "inventory-api", "get-inventories-by-ids",
                 data, cancellationToken: cancellationToken);
 
             return inventories;
@@ -37,7 +37,7 @@ namespace ProductCatalogService.Infrastructure.Gateway
             var requestData = new InventoryRequest {InventoryId = id};
 
             var inventory = await _client.InvokeMethodAsync<InventoryRequest, InventoryDto>(
-                "inventoryapp", "get-inventory-by-id", requestData, cancellationToken: cancellationToken);
+                "inventory-api", "get-inventory-by-id", requestData, cancellationToken: cancellationToken);
 
             if (inventory is null)
             {

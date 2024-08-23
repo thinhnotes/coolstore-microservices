@@ -16,6 +16,19 @@ services:
       - POSTGRES_PASSWORD=P@ssw0rd
     ports:
       - "5434:5432"
+
+  ############################
+  # Redis state store
+  ############################
+  redis:
+    image: "redis:alpine"
+    networks:
+      - coolstore-network
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - DISABLE_COMMANDS=FLUSHDB,FLUSHALL,CONFIG
+    ports:
+      - "6377:6379"
       
 networks:
   coolstore-network:
