@@ -50,7 +50,7 @@ builder.Services.AddCustomOtelWithZipkin(builder.Configuration,
             ? new Uri($"http://{builder.Configuration.GetServiceUri("zipkin")?.DnsSafeHost}:9411/api/v2/spans")
             : o.Endpoint;
     });
-builder.Services.AddOpenApi(builder.Configuration.GetValue<string>("Authn__Authority"), new Dictionary<string, string>
+builder.Services.AddOpenApi(builder.Configuration, new Dictionary<string, string>
 {
     {"scope1", "Demo API - full access"}
 });

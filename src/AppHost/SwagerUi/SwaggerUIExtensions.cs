@@ -43,6 +43,12 @@ public static class SwaggerUIExtensions
     class SwaggerUiHook(ResourceNotificationService notificationService,
                ResourceLoggerService resourceLoggerService) : IDistributedApplicationLifecycleHook
     {
+        Dictionary<string, int> servicvesPort = new Dictionary<string, int>(){
+            {"inventory-api", 25002},
+            {"product-api", 25003},
+            {"sale-api", 25005},
+            {"shoppingcart-api", 25004 }
+        };
         public async Task AfterEndpointsAllocatedAsync(DistributedApplicationModel appModel, CancellationToken cancellationToken = default)
         {
             var openApiResource = appModel.Resources.OfType<SwaggerUIResource>().SingleOrDefault();
@@ -90,7 +96,7 @@ public static class SwaggerUIExtensions
 
                 // We add a new URL for each resource that has a swagger ui annotation
                 // This is because swagger ui takes over the entire url space
-                app.Urls.Add("http://127.0.0.1:0");
+                app.Urls.Add($"http://127.0.0.1:{servicvesPort[r.Name]}");
             }
 
             var client = new HttpMessageInvoker(new SocketsHttpHandler());

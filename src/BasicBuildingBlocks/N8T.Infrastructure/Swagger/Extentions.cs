@@ -6,16 +6,20 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Google.Protobuf.WellKnownTypes;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Configuration;
 
 namespace N8T.Infrastructure.Swagger
 {
     public static class Extentions
     {
-        public static IServiceCollection AddOpenApi(this IServiceCollection services, string identityUrl, Dictionary<string, string> scope)
+        public static IServiceCollection AddOpenApi(this IServiceCollection services, IConfiguration config, Dictionary<string, string> scope)
         {
             //services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
             services.AddSwaggerGen(options =>
             {
+                JwtBearerOptions authSetting = new JwtBearerOptions();
+                config.Bind("Authn", authSetting);
                 options.OperationFilter<AuthorizeCheckOperationFilter>();
 
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "Protected API", Version = "v1" });
@@ -27,8 +31,8 @@ namespace N8T.Infrastructure.Swagger
                     {
                         AuthorizationCode = new OpenApiOAuthFlow
                         {
-                            AuthorizationUrl = new Uri($"{identityUrl}/connect/authorize"),
-                            TokenUrl = new Uri($"{identityUrl}/connect/token"),
+                            AuthorizationUrl = new Uri($"{authSetting.Authority}/connect/authorize"),
+                            TokenUrl = new Uri($"{authSetting.Authority}/connect/token"),
                             Scopes = scope
                         }
                     }

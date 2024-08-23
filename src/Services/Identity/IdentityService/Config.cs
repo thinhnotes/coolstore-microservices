@@ -102,7 +102,7 @@ namespace IdentityService
                 },
                 new Client
                 {
-                    ClientId = "inventory_api_swagger",
+                    ClientId = "inventory-api",
                     ClientName = "Swagger UI for Inventory API",
                     ClientSecrets = {new Secret("secret".Sha256())}, // change me!
 
@@ -110,8 +110,79 @@ namespace IdentityService
                     RequirePkce = false,
                     RequireClientSecret = false,
 
-                    RedirectUris = {"https://localhost:5002/swagger/oauth2-redirect.html"},
-                    AllowedCorsOrigins = {"https://localhost:5002"},
+                    RedirectUris = {
+                        "https://localhost:5002/swagger/oauth2-redirect.html",
+                        "http://127.0.0.1:25002/swagger/oauth2-redirect.html",
+                        "http://127.0.0.1:25002/swagger/inventory-api/oauth2-redirect.html",
+                        "http://127.0.0.1:25002/swagger/product-api/v1/oauth2-redirect.html"
+                    },
+                    AllowedCorsOrigins = {
+                        "https://localhost:5002",
+                        "http://127.0.0.1:25002"
+                    },
+                    AllowedScopes = { "scope1" }
+                },
+                new Client
+                {
+                    ClientId = "product-api",
+                    ClientName = "Swagger UI for Inventory API",
+                    ClientSecrets = {new Secret("secret".Sha256())}, // change me!
+
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequirePkce = false,
+                    RequireClientSecret = false,
+
+                    RedirectUris = {
+                        "https://localhost:5003/swagger/oauth2-redirect.html",
+                        "http://127.0.0.1:25003/swagger/oauth2-redirect.html",
+                        "http://127.0.0.1:25003/swagger/product-api/v1/oauth2-redirect.html"
+                    },
+                    AllowedCorsOrigins = {
+                        "https://localhost:5003",
+                        "http://127.0.0.1:25003"
+                    },
+                    AllowedScopes = { "scope1" }
+                },
+                new Client
+                {
+                    ClientId = "sale-api",
+                    ClientName = "Swagger UI for Inventory API",
+                    ClientSecrets = {new Secret("secret".Sha256())}, // change me!
+
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequirePkce = false,
+                    RequireClientSecret = false,
+
+                    RedirectUris = {
+                        "https://localhost:5005/swagger/oauth2-redirect.html",
+                        "http://127.0.0.1:25005/swagger/oauth2-redirect.html",
+                        "http://127.0.0.1:25005/swagger/sale-api/v1/oauth2-redirect.html"
+                    },
+                    AllowedCorsOrigins = {
+                        "https://localhost:5005",
+                        "http://127.0.0.1:25005"
+                    },
+                    AllowedScopes = { "scope1" }
+                },
+                new Client
+                {
+                    ClientId = "shoppingcart-api",
+                    ClientName = "Swagger UI for Inventory API",
+                    ClientSecrets = {new Secret("secret".Sha256())}, // change me!
+
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequirePkce = false,
+                    RequireClientSecret = false,
+
+                    RedirectUris = {
+                        "https://localhost:5004/swagger/oauth2-redirect.html",
+                        "http://127.0.0.1:25004/swagger/oauth2-redirect.html",
+                        "http://127.0.0.1:25004/swagger/shoppingcart-api/v1/oauth2-redirect.html"
+                    },
+                    AllowedCorsOrigins = {
+                        "https://localhost:5004",
+                        "http://127.0.0.1:25004"
+                    },
                     AllowedScopes = { "scope1" }
                 },
                 // password flow

@@ -45,7 +45,7 @@ builder.Services.AddCustomOtelWithZipkin(builder.Configuration,
             : o.Endpoint;
     });
 
-builder.Services.AddOpenApi(builder.Configuration.GetValue<string>("Authn__Authority"), new Dictionary<string, string>
+builder.Services.AddOpenApi(builder.Configuration, new Dictionary<string, string>
 {
     {"scope1", "Demo API - full access"}
 });
