@@ -9,7 +9,6 @@ using N8T.Infrastructure;
 using N8T.Infrastructure.Auth;
 using N8T.Infrastructure.ClientServices;
 using N8T.Infrastructure.EfCore;
-using N8T.Infrastructure.OTel;
 using N8T.Infrastructure.Swagger;
 using N8T.Infrastructure.Tye;
 using N8T.Infrastructure.Validator;
@@ -21,13 +20,7 @@ using ProductCatalogService.Infrastructure.Gateway;
 var builder = WebApplication.CreateBuilder(args);
 bool isRunOnTye = builder.Configuration.IsRunOnTye();
 
-builder.Services.AddServiceDiscovery();
-
-builder.Services.ConfigureHttpClientDefaults(http =>
-{
-    // Turn on service discovery by default
-    http.AddServiceDiscovery();
-});
+builder.AddServiceDefaults();
 
 builder.Services.AddHttpContextAccessor()
     .AddCustomMediatR<Anchor>()
