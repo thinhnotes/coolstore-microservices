@@ -10,15 +10,14 @@ using N8T.Infrastructure;
 using N8T.Infrastructure.Auth;
 using N8T.Infrastructure.ClientServices;
 using N8T.Infrastructure.EfCore;
-using N8T.Infrastructure.OTel;
 using N8T.Infrastructure.Validator;
 using N8T.Infrastructure.Swagger;
 using System.Collections.Generic;
 using Asp.Versioning;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
 builder.Services.AddHttpContextAccessor()
         .AddCustomMediatR<Anchor>()
         .AddCustomValidators<Anchor>()
@@ -30,9 +29,6 @@ builder.Services.AddHealthChecks()
         .AddNpgSql(builder.Configuration.GetConnectionString("postgres"));
 
 builder.Services.AddCustomAuth<Anchor>(builder.Configuration);
-
-//Need check zipkin
-builder.Services.AddCustomOtelWithZipkin(builder.Configuration);
 
 builder.Services.AddOpenApi(builder.Configuration, new Dictionary<string, string>
 {
@@ -53,24 +49,15 @@ var versionedGroup = app
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
+    app.UseOpenApi();
 }
 app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseOpenApi();
-
+app.MapDefaultEndpoints();
 app.MapEndpoints(versionedGroup);
-
-app.MapHealthChecks("/healthz", new HealthCheckOptions { Predicate = _ => true });
-app.MapHealthChecks("/liveness",
-    new HealthCheckOptions { Predicate = r => r.Name.Contains("self") });
-
 app.MapControllers();
-
-
-//app.ApplicationServices.CreateLoggerConfiguration(IsRunOnTye);
-
 
 app.Run();

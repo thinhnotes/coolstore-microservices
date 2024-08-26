@@ -41,9 +41,6 @@ builder.Services.AddHealthChecks()
 
 builder.Services.AddCustomAuth<Anchor>(builder.Configuration);
 
-//Need check zipkin
-builder.Services.AddCustomOtelWithZipkin(builder.Configuration);
-
 builder.Services.AddOpenApi(builder.Configuration, new Dictionary<string, string>
 {
     {"scope1", "Demo API - full access"}
@@ -64,10 +61,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapHealthChecks("/healthz", new HealthCheckOptions { Predicate = _ => true });
-app.MapHealthChecks("/liveness",
-    new HealthCheckOptions { Predicate = r => r.Name.Contains("self") });
-
+app.MapDefaultEndpoints();
 app.MapControllers();
 
 app.Run();

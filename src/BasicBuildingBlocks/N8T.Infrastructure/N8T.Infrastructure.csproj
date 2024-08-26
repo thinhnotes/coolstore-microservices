@@ -4,8 +4,9 @@
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <!--Carefull with lib preview because some function is break the aspire for example the Google.Protobuf version 4.0.0-rc2-->
     <PackageReference Include="FluentValidation" Version="11.9.2" />
-    <PackageReference Include="Google.Protobuf" Version="4.0.0-rc2" />
+    <PackageReference Include="Google.Protobuf" Version="3.27.3" />
     <PackageReference Include="Grpc.AspNetCore.Server" Version="2.65.0" />
     <PackageReference Include="Grpc.Core" Version="2.46.6" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.65.0" />

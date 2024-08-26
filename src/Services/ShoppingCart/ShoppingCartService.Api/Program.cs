@@ -18,6 +18,7 @@ using ShoppingCartService.Infrastructure.Gateway;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
 builder.Services.AddHttpContextAccessor()
     .AddCustomMediatR<Anchor>()
     .AddCustomValidators<Anchor>()
@@ -49,14 +50,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseRouting();
 
-
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapHealthChecks("/healthz", new HealthCheckOptions { Predicate = _ => true });
-app.MapHealthChecks("/liveness",
-    new HealthCheckOptions { Predicate = r => r.Name.Contains("self") });
-
+app.MapDefaultEndpoints();
 app.MapControllers();
 
 

@@ -13,6 +13,7 @@ namespace IdentityService
     {
         public static WebApplication ConfigureServices(this WebApplicationBuilder builder)
         {
+            builder.AddServiceDefaults();
             builder.Services.AddRazorPages();
 
             var isBuilder = builder.Services.AddIdentityServer(options =>

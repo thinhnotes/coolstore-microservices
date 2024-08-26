@@ -6,21 +6,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Http;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.AddServiceDefaults();
 builder.Services.AddHttpContextAccessor();
-//builder.Services.AddServiceDiscovery();
-//builder.Services.ConfigureHttpClientDefaults(http =>
-//{
-//    http.AddServiceDiscovery();
-//});
-
-
-builder.Services.AddServiceDiscovery();
-
-builder.Services.ConfigureHttpClientDefaults(http =>
-{
-    // Turn on service discovery by default
-    http.AddServiceDiscovery();
-});
 
 builder.Services.AddCors(options =>
 {
@@ -33,6 +20,7 @@ var inventoryUrl = "https+http://inventory-api";
 var productCatalogUrl = "https+http://product-api";
 var shoppingCartUrl = "https+http://shoppingcart-api";
 var saleUrl = "https+http://sale-api";
+
 
 builder.Services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSection("ReverseProxy")).AddServiceDiscoveryDestinationResolver();
 
