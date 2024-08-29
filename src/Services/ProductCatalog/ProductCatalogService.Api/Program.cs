@@ -25,9 +25,11 @@ builder.AddServiceDefaults();
 builder.Services.AddHttpContextAccessor()
     .AddCustomMediatR<Anchor>()
     .AddCustomValidators<Anchor>()
-    .AddCustomDbContext<MainDbContext, Anchor>(builder.Configuration.GetConnectionString("postgres"))
-    .AddCustomClientServices(builder.Configuration.GetConnectionString("redis"))
     .AddControllers();
+
+builder.AddCustomClientServices("redis");
+
+builder.AddCustomDbContext<MainDbContext, Anchor>(builder.Configuration.GetConnectionString("postgres"));
 
 builder.Services.AddHealthChecks()
     .AddNpgSql(builder.Configuration.GetConnectionString("postgres"));

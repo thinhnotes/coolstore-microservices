@@ -56,6 +56,10 @@ namespace N8T.Infrastructure.ClientServices
         {
             var db = _redis.GetDatabase();
             string value = await db.StringGetAsync(key);
+            if (value == null)
+            {
+                return default(TValue);
+            }
             return Newtonsoft.Json.JsonConvert.DeserializeObject<TValue>(value);
         }
 

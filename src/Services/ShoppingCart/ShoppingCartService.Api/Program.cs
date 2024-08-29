@@ -22,9 +22,9 @@ builder.AddServiceDefaults();
 builder.Services.AddHttpContextAccessor()
     .AddCustomMediatR<Anchor>()
     .AddCustomValidators<Anchor>()
-    .AddCustomClientServices(builder.Configuration.GetConnectionString("redis"))
     .AddControllers();
 
+builder.AddCustomClientServices("redis");
 builder.Services.AddHealthChecks();
 
 builder.Services.AddCustomAuth<Anchor>(builder.Configuration);
