@@ -31,9 +31,6 @@ builder.AddCustomClientServices("redis");
 
 builder.AddCustomDbContext<MainDbContext, Anchor>(builder.Configuration.GetConnectionString("postgres"));
 
-builder.Services.AddHealthChecks()
-    .AddNpgSql(builder.Configuration.GetConnectionString("postgres"));
-
 builder.Services.AddCustomAuth<Anchor>(builder.Configuration);
 
 builder.Services.AddOpenApi(builder.Configuration, new Dictionary<string, string>
@@ -44,6 +41,7 @@ builder.Services.AddOpenApi(builder.Configuration, new Dictionary<string, string
 builder.Services.AddScoped<IInventoryGateway, InventoryGateway>();
 
 var app = builder.Build();
+app.MapDefaultEndpoints();
 
 if (app.Environment.IsDevelopment())
 {
@@ -56,7 +54,6 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapDefaultEndpoints();
 app.MapControllers();
 
 app.Run();

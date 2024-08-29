@@ -25,7 +25,6 @@ builder.Services.AddHttpContextAccessor()
     .AddControllers();
 
 builder.AddCustomClientServices("redis");
-builder.Services.AddHealthChecks();
 
 builder.Services.AddCustomAuth<Anchor>(builder.Configuration);
 

@@ -59,6 +59,7 @@ namespace N8T.Infrastructure.EfCore
             });
             builder.EnrichNpgsqlDbContext<TDbContext>();
 
+
             builder.Services.AddScoped<IDbFacadeResolver>(provider => provider.GetService<IDbContextFactory<TDbContext>>()!.CreateDbContext());
             builder.Services.AddScoped<IDomainEventContext>(provider => provider.GetService<IDbContextFactory<TDbContext>>()!.CreateDbContext());
 
