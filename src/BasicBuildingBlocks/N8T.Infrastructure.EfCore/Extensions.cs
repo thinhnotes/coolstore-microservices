@@ -5,50 +5,22 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Aspire.Npgsql.EntityFrameworkCore.PostgreSQL;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using N8T.Domain;
-using Polly;
 
 namespace N8T.Infrastructure.EfCore
 {
-    public static class EntityFrameworkUtils
-    {
-        /// <summary>
-        /// Binds the DbContext specific configuration section to settings when available.
-        /// </summary>
-        public static TSettings GetDbContextSettings<TContext, TSettings>(this IHostApplicationBuilder builder, string defaultConfigSectionName, Action<TSettings, IConfiguration> bindSettings)
-            where TSettings : new()
-        {
-            TSettings settings = new();
-            var typeSpecificSectionName = $"{defaultConfigSectionName}:{typeof(TContext).Name}";
-            var typeSpecificConfigurationSection = builder.Configuration.GetSection(typeSpecificSectionName);
-            if (typeSpecificConfigurationSection.Exists()) // https://github.com/dotnet/runtime/issues/91380
-            {
-                bindSettings(settings, typeSpecificConfigurationSection);
-            }
-            else
-            {
-                var section = builder.Configuration.GetSection(defaultConfigSectionName);
-                bindSettings(settings, section);
-            }
-
-            return settings;
-        }
-    }
-
     public static class Extensions
     {
-        private const string DefaultConfigSectionName = "Aspire:Npgsql:EntityFrameworkCore:PostgreSQL";
-
         public static IHostApplicationBuilder AddCustomDbContext<TDbContext, TType>(this IHostApplicationBuilder builder, string connString)
             where TDbContext : DbContext, IDbFacadeResolver, IDomainEventContext
         {
+            builder.Services.TryAddScoped<TDbContext>();
             builder.Services.AddPooledDbContextFactory<TDbContext>(options =>
             {
                 options.UseNpgsql(connString, sqlOptions =>
@@ -58,8 +30,6 @@ namespace N8T.Infrastructure.EfCore
                 }).UseSnakeCaseNamingConvention();
             });
             builder.EnrichNpgsqlDbContext<TDbContext>();
-
-
             builder.Services.AddScoped<IDbFacadeResolver>(provider => provider.GetService<IDbContextFactory<TDbContext>>()!.CreateDbContext());
             builder.Services.AddScoped<IDomainEventContext>(provider => provider.GetService<IDbContextFactory<TDbContext>>()!.CreateDbContext());
 
