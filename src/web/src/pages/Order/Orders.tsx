@@ -53,9 +53,9 @@ const Orders: React.FC<IProps> = (props) => {
                     : 0}
                 </td>
                 <td>
-                  {order.orderStatus == 0 ? (
+                  {order.orderStatus === 0 ? (
                     <Badge color="primary">Received</Badge>
-                  ) : order.orderStatus == 1 ? (
+                  ) : order.orderStatus === 1 ? (
                     <Badge color="warning">Processing</Badge>
                   ) : (
                     <Badge color="success">Completed</Badge>

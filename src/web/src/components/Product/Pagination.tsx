@@ -11,27 +11,27 @@ const Pagination: React.FC = () => {
       <StyledNav aria-label="Page navigation example">
         <ul className="pagination">
           <li className="page-item">
-            <a className="page-link" href="#">
+            <a className="page-link" href="{someValidPath}">
               Previous
             </a>
           </li>
           <li className="page-item">
-            <a className="page-link" href="#">
+            <a className="page-link" href="{someValidPath}">
               1
             </a>
           </li>
           <li className="page-item active">
-            <a className="page-link " href="#">
+            <a className="page-link " href="{someValidPath}">
               2
             </a>
           </li>
           <li className="page-item">
-            <a className="page-link" href="#">
+            <a className="page-link" href="{someValidPath}">
               3
             </a>
           </li>
           <li className="page-item">
-            <a className="page-link" href="#">
+            <a className="page-link" href="{someValidPath}">
               Next
             </a>
           </li>
