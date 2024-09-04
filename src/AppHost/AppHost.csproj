@@ -35,6 +35,7 @@
     <ProjectReference Include="..\Services\ProductCatalog\ProductCatalogService.Api\ProductCatalogService.Api.csproj" />
     <ProjectReference Include="..\Services\Sale\SaleService.Api\SaleService.Api.csproj" />
     <ProjectReference Include="..\Services\ShoppingCart\ShoppingCartService.Api\ShoppingCartService.Api.csproj" />
+    <ProjectReference Include="..\WebUI\BlazorWeb\BlazorWeb\BlazorWeb.Client\BlazorWeb.Client.csproj" />
     <ProjectReference Include="..\WebUI\BlazorWeb\BlazorWeb\BlazorWeb\BlazorWeb.csproj" />
   </ItemGroup>
 

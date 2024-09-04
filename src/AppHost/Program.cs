@@ -63,14 +63,20 @@ builder.AddProject<Projects.BlazorWeb>("webUI")
 var identityUrl = identityApi.GetEndpoint("http");
 var webapiUrl = webapigatewayApi.GetEndpoint("http");
 
+builder.AddProject<Projects.BlazorWeb_Client>("webUI-client")
+       .WaitFor(identityApi)
+       .WaitFor(webapigatewayApi)
+       .WithReference(identityApi)
+       .WithReference(webapigatewayApi);
+
 //it need run node 10.16.3 and run npm install before run the projects
-builder.AddNpmApp("web", "../web")
-    .WithEnvironment("PORT", "3000")
-    .WithEnvironment("REACT_APP_AUTHORITY", identityUrl)
-    .WithEnvironment("REACT_APP_API", webapiUrl)
-    //.WithHttpEndpoint(3000)
-    .WaitFor(identityApi)
-    .WaitFor(webapigatewayApi)
-    .PublishAsDockerFile();
+//builder.AddNpmApp("web", "../web")
+//    .WithEnvironment("PORT", "3000")
+//    .WithEnvironment("REACT_APP_AUTHORITY", identityUrl)
+//    .WithEnvironment("REACT_APP_API", webapiUrl)
+//    //.WithHttpEndpoint(3000)
+//    .WaitFor(identityApi)
+//    .WaitFor(webapigatewayApi)
+//    .PublishAsDockerFile();
 
 builder.Build().Run();

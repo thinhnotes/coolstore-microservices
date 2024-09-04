@@ -23,6 +23,7 @@ const AppLayout = ({ location }: any) => {
           <Route path={'/auth/callback'} component={Callback} />
           <Route path={'/auth/silent-renew'} component={SilentCallback} />
           <Route path={'/401'} component={NotAuth} />
+          <Route path="/_framework" render={(): null => null} />
           <Route component={NotFound} />
         </Switch>
       </Suspense>

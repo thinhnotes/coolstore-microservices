@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "ShoppingCartService.Api": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:5006;http://localhost:15006"
+    }
+  }
+}
