@@ -17,7 +17,7 @@ builder.Services.AddCors(options =>
     });
 });
 var inventoryUrl = "https+http://inventory-api";
-var productCatalogUrl = "https+http://product-api";
+var productCatalogUrl = "https+http://productcatalogapp";
 var shoppingCartUrl = "https+http://shoppingcart-api";
 var saleUrl = "https+http://sale-api";
 
