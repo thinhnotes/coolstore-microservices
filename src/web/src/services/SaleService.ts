@@ -19,6 +19,7 @@ const getRequestOptions = (token: string): AxiosRequestConfig => {
 
 export const getOrders = async () => {
   const user = await AuthService.getUser()
+  if (!user) throw new Error('User not authenticated')
   const response: AxiosResponse = await axios.get<IOrder[]>(
     `${saleResourceUrl}`,
     getRequestOptions(user.access_token)

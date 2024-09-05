@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, Input, Label, CustomInput, Badge } from 'reactstrap'
+import { Button, Input, Label, Badge } from 'reactstrap'
 import styled from 'styled-components'
 import _ from 'lodash'
 
@@ -44,7 +44,7 @@ const Filter: React.FC<IProps> = ({ onPriceFilterChange, initPrice, maxPrice, ca
         <StyledProductSideBarWidget>
           <StyledProductSideBarWidgetTitle>Price</StyledProductSideBarWidgetTitle>
           <Label for="exampleCustomRange">${price.toFixed(2)}</Label>
-          <CustomInput
+          <Input
             type="range"
             id="exampleCustomRange"
             name="customRange"
@@ -63,8 +63,8 @@ const Filter: React.FC<IProps> = ({ onPriceFilterChange, initPrice, maxPrice, ca
         <StyledProductSideBarWidget>
           <StyledProductSideBarWidgetTitle>Category</StyledProductSideBarWidgetTitle>
           {categoryTags.map(category => (
-            <div className="custom-control custom-checkbox">
-              <Input type="checkbox" className="custom-control-input" id={category.key} checked />
+            <div className="custom-control custom-checkbox" key={category.key}>
+              <Input type="checkbox" className="custom-control-input" id={category.key} />
               <Label className="custom-control-label" for={category.key}>
                 {category.key} <Badge color="success">{category.count}</Badge>
               </Label>
@@ -75,8 +75,8 @@ const Filter: React.FC<IProps> = ({ onPriceFilterChange, initPrice, maxPrice, ca
         <StyledProductSideBarWidget>
           <StyledProductSideBarWidgetTitle>Location</StyledProductSideBarWidgetTitle>
           {inventoryTags.map(inventory => (
-            <div className="custom-control custom-checkbox">
-              <Input type="checkbox" className="custom-control-input" id={inventory.key} checked />
+            <div className="custom-control custom-checkbox" key={inventory.key}>
+              <Input type="checkbox" className="custom-control-input" id={inventory.key}  />
               <Label className="custom-control-label" for={inventory.key}>
                 {inventory.key} <Badge color="success">{inventory.count}</Badge>
               </Label>

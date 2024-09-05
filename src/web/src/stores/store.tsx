@@ -1,5 +1,5 @@
 // ref https://stackblitz.com/edit/react-ts-tg3gfu
-import React, { createContext, useContext, useReducer } from 'react'
+import React, { createContext, useContext, useReducer, ReactNode } from 'react'
 import _ from 'lodash'
 
 import { createAction, createActionPayload, ActionsUnion } from './actions'
@@ -47,7 +47,7 @@ export const AppActions = {
   hideNotification: createAction<typeof HIDE_NOTIFICATION>(HIDE_NOTIFICATION)
 }
 
-const reducers = (state: IAppState, action: ActionsUnion<typeof AppActions>) => {
+function counterReducer(state: IAppState, action: ActionsUnion<typeof AppActions>) {
   switch (action.type) {
     case LOAD_USER_LOGIN:
       return {
@@ -95,8 +95,8 @@ const reducers = (state: IAppState, action: ActionsUnion<typeof AppActions>) => 
       }
 
       return {
-        cart: tempCart,
-        ...state
+        ...state,
+        cart: tempCart
       }
 
     case DELETE_PRODUCT_IN_CART:
@@ -139,19 +139,15 @@ const reducers = (state: IAppState, action: ActionsUnion<typeof AppActions>) => 
         notificationMessage: null,
         isShowNotification: false
       }
-
-    default:
-      const exhaustiveCheck: never = action
-      if (typeof exhaustiveCheck != 'undefined') break
   }
 }
 
 export const AppContext = createContext({} as IAppContextProps)
 
-export const AppProvider = (props: React.Props<IAppContextProps>) => {
-  const [state, dispatch] = useReducer(reducers, initialState)
+export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [state, dispatch] = useReducer(counterReducer, initialState)
   const value = { state, dispatch } as IAppContextProps
-  return <AppContext.Provider value={value}>{props.children}</AppContext.Provider>
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>
 }
 
 export const useStore = () => useContext(AppContext)

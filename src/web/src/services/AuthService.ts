@@ -1,7 +1,6 @@
 import { UserManager, UserManagerSettings } from 'oidc-client'
-import { RouteChildrenProps } from 'react-router'
-
 import LoggerService from './LoggerService'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 const webUrl = window.location.origin
 LoggerService.info(`Web URL is at ${webUrl}.`)
@@ -33,15 +32,14 @@ class AuthService {
     return await this.userManager.getUser()
   }
 
-  async authenticateUser(location: RouteChildrenProps) {
+  async authenticateUser(currentUrl: string) {
     if (!this.userManager || !this.userManager.getUser) {
       return
     }
-
     let oidcUser = await this.userManager.getUser()
     if (!oidcUser || oidcUser.expired) {
       LoggerService.debug('user is being authenticated...')
-      let url = location.location.pathname + (location.location.search || '')
+      let url = currentUrl
       await this.userManager.signinRedirect({ data: { url } })
     }
   }

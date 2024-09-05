@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback } from 'react'
-import { RouteComponentProps } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 import { ProductItemDetail } from 'components/Product'
 import { withLayout } from 'components/HOC'
@@ -7,13 +7,8 @@ import { withLayout } from 'components/HOC'
 import { useStore, AppActions } from 'stores/store'
 import { getProduct } from 'services/ProductService'
 
-type TParams = {
-  id: string
-}
-
-interface IProps extends RouteComponentProps<TParams> {}
-
-const ProductDetail: React.FC<IProps> = ({ match }: RouteComponentProps<TParams>) => {
+const ProductDetail: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
   const { state, dispatch } = useStore()
 
   const fetchData = useCallback(
@@ -25,14 +20,18 @@ const ProductDetail: React.FC<IProps> = ({ match }: RouteComponentProps<TParams>
   )
 
   useEffect(() => {
-    fetchData(match.params.id)
-  }, [state.isProductLoaded, fetchData, match.params.id])
+    if (id) {
+      fetchData(id)
+    }
+  }, [state.isProductLoaded, fetchData, id])
 
   return (
     <div className="container-fluid">
       <div className="row">
         <div className="offset-xl-2 col-xl-8 col-lg-12 col-md-12 col-sm-12 col-12">
-          <div className="row">{state.isProductLoaded && <ProductItemDetail data={state.productDetail} />}</div>
+          <div className="row">
+            {state.isProductLoaded && state.productDetail && <ProductItemDetail data={state.productDetail} />}
+          </div>
         </div>
       </div>
     </div>

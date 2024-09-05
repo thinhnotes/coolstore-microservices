@@ -1,5 +1,4 @@
 import React, { useEffect, useCallback } from "react";
-import { RouteComponentProps } from "react-router-dom";
 
 import { withLayout } from "components/HOC";
 import { Table, Badge } from "reactstrap";
@@ -12,9 +11,7 @@ const MySpace = styled.div`
   margin: 2rem;
 `;
 
-interface IProps extends RouteComponentProps {}
-
-const Orders: React.FC<IProps> = (props) => {
+const Orders: React.FC = () => {
   const { state, dispatch } = useStore();
 
   const fetchData = useCallback(async () => {
@@ -45,8 +42,8 @@ const Orders: React.FC<IProps> = (props) => {
             state.orders.map((order) => (
               <tr key={order.id}>
                 <td>{order.customerFullName}</td>
-                <td>{order.orderDate}</td>
-                <td>{order.completeDate}</td>
+                <td>{order.orderDate.toLocaleDateString()}</td>
+                <td>{order.completeDate.toLocaleDateString()}</td>
                 <td>
                   {order.orderItems && order.orderItems.length > 0
                     ? order.orderItems.length

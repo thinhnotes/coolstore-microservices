@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react'
-import { RouteChildrenProps } from 'react-router'
 
 import { AuthService, LoggerService } from 'services'
 
-export default (props: React.Component & RouteChildrenProps) => {
+export default function SilentCallback() {
   useEffect(() => {
     let signinRedirectCallback = async () => {
       try {
