@@ -45,7 +45,7 @@ public static class SwaggerUIExtensions
     {
         Dictionary<string, int> servicvesPort = new Dictionary<string, int>(){
             {"inventory-api", 25002},
-            {"product-api", 25003},
+            {"productcatalogapp", 25003},
             {"sale-api", 25005},
             {"shoppingcart-api", 25004 }
         };

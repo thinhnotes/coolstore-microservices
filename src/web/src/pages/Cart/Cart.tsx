@@ -19,7 +19,7 @@ const StyledContainer = styled.div`
 
 const Cart: React.FC = () => {
   const { state, dispatch } = useStore();
-  const [cart, setCart] = useState<ICart>(null);
+  const [cart, setCart] = useState<ICart | null>(null);
 
   const fetchData = useCallback(async () => {
     let cart = await getCartForCurrentUser();

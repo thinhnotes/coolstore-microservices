@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useCallback, memo } from "react";
 import { Link } from "react-router-dom";
 import {
-  Jumbotron,
   Container,
   Navbar,
   Nav,
@@ -20,13 +19,16 @@ import {
   faCubes,
 } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
-import { RouteComponentProps } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { AuthService } from "services";
 import { IAppUser } from "stores/types";
 
-const MyJumbotron = styled(Jumbotron)`
-  padding: 2rem 2rem;
+const Jumbotron = styled.div`
+  padding: 2rem 1rem;
+  margin-bottom: 2rem;
+  background-color: #e9ecef;
+  border-radius: 0.3rem;
 `;
 
 const StyledHeader = styled(Link)`
@@ -51,19 +53,22 @@ const StyledNavLink = styled(NavLink)`
   }
 `;
 
-interface IProps extends RouteComponentProps {}
+interface IProps {}
 
-const Header: React.FC<IProps> = ({ history }) => {
-  const [user, setUser] = useState<IAppUser>(null);
+const Header: React.FC<IProps> = () => {
+  const [user, setUser] = useState<IAppUser | null>(null);
+  const navigate = useNavigate();
 
   const fetchData = useCallback(async () => {
     var user = await AuthService.getUser();
-    let currentUser = {
-      userName: user.profile.name,
-      email: user.profile.email,
-      accessToken: user.access_token,
-    };
-    setUser(currentUser);
+    if (user && user.profile.name && user.profile.email) {
+      let currentUser: IAppUser = {
+        userName: user.profile.name,
+        email: user.profile.email,
+        accessToken: user.access_token,
+      };
+      setUser(currentUser);
+    }
   }, []);
 
   useEffect(() => {
@@ -72,7 +77,7 @@ const Header: React.FC<IProps> = ({ history }) => {
 
   return (
     <>
-      <MyJumbotron fluid>
+      <Jumbotron>
         <Container fluid>
           <div>
             <h1 className="display-4">
@@ -86,7 +91,7 @@ const Header: React.FC<IProps> = ({ history }) => {
             </p>
           </div>
         </Container>
-      </MyJumbotron>
+      </Jumbotron>
 
       <div>
         <StyledNavBar color="light" light expand="md">
@@ -98,17 +103,17 @@ const Header: React.FC<IProps> = ({ history }) => {
           <Collapse navbar>
             <Nav className="ml-auto">
               <StyledDropdown nav inNavbar>
-                <StyledNavLink onClick={() => history.push(`/orders`)}>
+                <StyledNavLink onClick={() => navigate(`/orders`)}>
                   <FontAwesomeIcon icon={faCubes}></FontAwesomeIcon> Orders
                 </StyledNavLink>
-                <StyledNavLink onClick={() => history.push(`/cart`)}>
+                <StyledNavLink onClick={() => navigate(`/cart`)}>
                   <FontAwesomeIcon icon={faShoppingCart}></FontAwesomeIcon> Cart
                 </StyledNavLink>
                 <DropdownToggle nav caret>
                   <FontAwesomeIcon icon={faUser}></FontAwesomeIcon>{" "}
                   {user != null ? user.userName : ""}
                 </DropdownToggle>
-                <DropdownMenu right>
+                <DropdownMenu>
                   <Button
                     color="link"
                     size="sm"

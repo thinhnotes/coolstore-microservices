@@ -114,7 +114,7 @@ namespace IdentityService
                         "https://localhost:5002/swagger/oauth2-redirect.html",
                         "http://127.0.0.1:25002/swagger/oauth2-redirect.html",
                         "http://127.0.0.1:25002/swagger/inventory-api/oauth2-redirect.html",
-                        "http://127.0.0.1:25002/swagger/product-api/v1/oauth2-redirect.html"
+                        "http://127.0.0.1:25002/swagger/productcatalogapp/v1/oauth2-redirect.html"
                     },
                     AllowedCorsOrigins = {
                         "https://localhost:5002",
@@ -124,7 +124,7 @@ namespace IdentityService
                 },
                 new Client
                 {
-                    ClientId = "product-api",
+                    ClientId = "productcatalogapp",
                     ClientName = "Swagger UI for Inventory API",
                     ClientSecrets = {new Secret("secret".Sha256())}, // change me!
 
@@ -135,7 +135,7 @@ namespace IdentityService
                     RedirectUris = {
                         "https://localhost:5003/swagger/oauth2-redirect.html",
                         "http://127.0.0.1:25003/swagger/oauth2-redirect.html",
-                        "http://127.0.0.1:25003/swagger/product-api/v1/oauth2-redirect.html"
+                        "http://127.0.0.1:25003/swagger/productcatalogapp/v1/oauth2-redirect.html"
                     },
                     AllowedCorsOrigins = {
                         "https://localhost:5003",

@@ -17,7 +17,7 @@ namespace ShoppingCartService.Infrastructure.Gateway
 
         public ProductCatalogGateway(IClientServices client, ILogger<ProductCatalogGateway> logger)
         {
-            _client = _client ?? throw new ArgumentNullException(nameof(_client));
+            _client = client ?? throw new ArgumentNullException(nameof(client));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 

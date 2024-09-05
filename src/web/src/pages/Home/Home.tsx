@@ -1,6 +1,4 @@
-import React, { useEffect, useCallback, useState } from 'react'
-import { RouteComponentProps } from 'react-router-dom'
-
+import { useEffect, useCallback, useState } from 'react'
 import { ProductItem, Pagination, Filter } from 'components/Product'
 import { withLayout } from 'components/HOC'
 
@@ -8,12 +6,22 @@ import { AppActions, useStore } from 'stores/store'
 import { searchProducts } from 'services/ProductService'
 import { getCartForCurrentUser, createCartForCurrentUser, updateCartForCurrentUser } from 'services/CartService'
 
-interface IProps extends RouteComponentProps {}
+interface IProps { }
 
-const Home: React.FC<IProps> = props => {
+interface ICategoryTagModel {
+  key: string;
+  count: number;
+}
+
+interface IInventoryTagModel {
+  key: string;
+  count: number;
+}
+
+function Home(props: IProps) {
   const { state, dispatch } = useStore()
-  const [categoryTags, setCategoryTags] = useState([])
-  const [inventoryTags, setInventoryTags] = useState([])
+  const [categoryTags, setCategoryTags] = useState<ICategoryTagModel[]>([])
+  const [inventoryTags, setInventoryTags] = useState<IInventoryTagModel[]>([])
 
   const fetchData = useCallback(
     async (page: number, price: number) => {
@@ -58,7 +66,7 @@ const Home: React.FC<IProps> = props => {
           <div className="col-xl-3 col-lg-4 col-md-4 col-sm-12 col-12">
             <Filter
               onPriceFilterChange={onPriceFilterChange}
-              initPrice={3000}
+              initPrice={10000}
               maxPrice={10000}
               categoryTags={categoryTags}
               inventoryTags={inventoryTags}
