@@ -2,6 +2,7 @@
   "name": "coolstore-app",
   "version": "0.1.0",
   "private": true,
+  "proxy": "https://localhost:5006",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.3.0",
     "@fortawesome/free-solid-svg-icons": "^6.3.0",
@@ -16,6 +17,7 @@
     "@types/styled-components": "^5.1.26",
     "axios": "^1.3.4",
     "bootstrap": "^5.2.3",
+    "http-proxy-middleware": "^3.0.2",
     "lodash": "^4.17.21",
     "oidc-client": "^1.11.5",
     "react": "^18.2.0",
