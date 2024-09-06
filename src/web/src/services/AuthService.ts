@@ -8,8 +8,8 @@ LoggerService.info(`Web URL is at ${webUrl}.`)
 const OidcConfig: UserManagerSettings = {
   client_id: 'coolstore.web',
   redirect_uri: `${webUrl}/auth/callback`,
-  authority: `${process.env.REACT_APP_AUTHORITY}`,
-  response_type: 'id_token token',
+  authority: `${import.meta.env.VITE_REACT_APP_AUTHORITY}`,
+    response_type: 'id_token token',
   post_logout_redirect_uri: `${webUrl}/`,
   scope: 'openid profile scope2',
   silent_redirect_uri: `${webUrl}/auth/silent-renew`,

@@ -3,7 +3,7 @@ import axios, { AxiosResponse, AxiosRequestConfig } from 'axios'
 import AuthService from './AuthService'
 import { IOrder } from 'stores/types'
 
-const apiUrl = `${process.env.REACT_APP_API}`
+const apiUrl = `${import.meta.env.VITE_REACT_APP_API}`
 const saleResourceUrl = '/sale/api/orders'
 
 const getRequestOptions = (token: string): AxiosRequestConfig => {

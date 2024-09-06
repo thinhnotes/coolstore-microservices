@@ -49,7 +49,7 @@ var shoppingCartApi = builder.AddProject<Projects.ShoppingCartService_Api>("shop
     .WithReference(postgres)
     .WithReference(redis)
     .WithReference(identityApi)
-    .WithReference(productApi) 
+    .WithReference(productApi)
     .WaitFor(postgres)
     .WaitFor(redis)
     // .WithEnvironment("ConnectionStrings__postgres", $"Server={hostInfra};Port=5434;Database=postgres;User Id=postgres;Password=P@ssw0rd")
@@ -66,28 +66,22 @@ var webapigatewayApi = builder.AddProject<Projects.WebApiGateway>("webapigateway
     .WithReference(saleApi)
     .WithReference(shoppingCartApi);
 
-builder.AddProject<Projects.BlazorWeb>("webUI")
-       .WaitFor(identityApi)
-       .WaitFor(webapigatewayApi)
-       .WithReference(identityApi)
-       .WithReference(webapigatewayApi);
+var blazorClient = builder.AddProject<Projects.BlazorWeb_Client>("webUI")
+    .WaitFor(identityApi)
+    .WaitFor(webapigatewayApi);
 var identityUrl = identityApi.GetEndpoint("http");
 var webapiUrl = webapigatewayApi.GetEndpoint("http");
-
-builder.AddProject<Projects.BlazorWeb_Client>("webUI-client")
-       .WaitFor(identityApi)
-       .WaitFor(webapigatewayApi)
-       .WithReference(identityApi)
-       .WithReference(webapigatewayApi);
+var blazorClientUrl = blazorClient.GetEndpoint("http");
 
 //it need run node 10.16.3 and run npm install before run the projects
-//builder.AddNpmApp("web", "../web")
-//    .WithEnvironment("PORT", "3000")
-//    .WithEnvironment("REACT_APP_AUTHORITY", identityUrl)
-//    .WithEnvironment("REACT_APP_API", webapiUrl)
-//    //.WithHttpEndpoint(3000)
-//    .WaitFor(identityApi)
-//    .WaitFor(webapigatewayApi)
-//    .PublishAsDockerFile();
+builder.AddNpmApp("web", "../web", "dev")
+    //.WithEnvironment("PORT", "3000")
+    .WithEnvironment("VITE_REACT_APP_AUTHORITY", identityUrl)
+    .WithEnvironment("VITE_REACT_APP_API", webapiUrl)
+    .WithEnvironment("VITE_REACT_APP_BLAZOR", blazorClientUrl)
+    //.WithHttpEndpoint(3000)
+    .WaitFor(identityApi)
+    .WaitFor(webapigatewayApi)
+    .PublishAsDockerFile();
 
 builder.Build().Run();

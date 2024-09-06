@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react'
 import { RouteProps } from 'react-router-dom'
 
-import { Header, Footer, Notification } from 'components/App'
-import { AppActions, useStore } from 'stores/store'
+import { Header, Footer, Notification, HeaderBlazor } from '../App'
+import { AppActions, useStore } from '../../stores/store'
 
 const withLayout = (WrappedComponent: React.ComponentType) => {
   return function ({ ...props }) {
@@ -18,6 +18,7 @@ const withLayout = (WrappedComponent: React.ComponentType) => {
     return (
       <>
         <Header></Header>
+        <HeaderBlazor></HeaderBlazor>
         <Notification></Notification>
         <WrappedComponent {...(props)} />
         <Footer></Footer>
