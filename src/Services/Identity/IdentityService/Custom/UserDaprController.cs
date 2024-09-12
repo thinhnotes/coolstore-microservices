@@ -15,7 +15,7 @@ namespace IdentityService.Custom
             return await Task.FromResult(result);
         }
 
-        private static IEnumerable<UserDto> GetUsers()
+        private static List<UserDto> GetUsers()
         {
             return new List<UserDto>
             {

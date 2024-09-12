@@ -13,9 +13,9 @@ namespace SaleService.Infrastructure.Gateway
     {
         private readonly IClientServices _client;
 
-        public InventoryGateway(IClientServices _client)
+        public InventoryGateway(IClientServices client)
         {
-            _client = _client ?? throw new ArgumentNullException(nameof(_client));
+            _client = client ?? throw new ArgumentNullException(nameof(client));
         }
 
         public async Task<IEnumerable<InventoryDto>> GetInventoryListAsync(IEnumerable<Guid>? ids = null,

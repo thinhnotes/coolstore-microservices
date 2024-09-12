@@ -25,9 +25,15 @@ namespace InventoryService.Application.GetInventory
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
+            if (inv == null)
+                throw new Exception($"Can not find ivnetoty with id {request.Id}");
+
             return new InventoryDto
             {
-                Id = inv.Id, Location = inv.Location, Description = inv.Description, Website = inv.Website
+                Id = inv.Id,
+                Location = inv.Location,
+                Description = inv.Description,
+                Website = inv.Website
             };
         }
     }

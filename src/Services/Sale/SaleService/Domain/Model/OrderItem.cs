@@ -13,7 +13,7 @@ namespace SaleService.Domain.Model
         public decimal Discount { get; set; } = default!;
         public Guid InventoryId { get; set; }
         public string InventoryFullInfo { get; set; } = default!;
-        public Order Order { get; set; }
+        public Order? Order { get; set; }
         public Guid OrderId { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using N8T.Domain;
 
 namespace SaleService.Domain.Model
@@ -15,6 +16,6 @@ namespace SaleService.Domain.Model
         public DateTime OrderDate { get; set; }
         public DateTime? CompleteDate { get; set; }
         public string StaffFullName { get; set; } = "admin";
-        public ICollection<OrderItem> OrderItems { get; set; }
+        public ICollection<OrderItem> OrderItems { get; set; } = new Collection<OrderItem>();
     }
 }

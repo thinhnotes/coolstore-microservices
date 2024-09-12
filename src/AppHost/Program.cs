@@ -10,7 +10,7 @@ var postgres = postgresQL.AddDatabase("postgres");
 
 var redis = builder.AddRedis("redis").WithHealthCheck();
 
-var hostInfra = "localhost";
+bool includeInfra = false;
 
 var identityApi = builder.AddProject<Projects.IdentityService>("identity-app");
 
@@ -20,8 +20,6 @@ var inventoryApi = builder.AddProject<Projects.InventoryService_Api>("inventory-
     .WithReference(identityApi)
     .WaitFor(postgres)
     .WaitFor(redis)
-    // .WithEnvironment("ConnectionStrings__postgres", $"Server={hostInfra};Port=5434;Database=postgres;User Id=postgres;Password=P@ssw0rd")
-    // .WithEnvironment("ConnectionStrings__redis", $"{hostInfra}:6377")
     .WithSwaggerUI();
 
 var productApi = builder.AddProject<Projects.ProductCatalogService_Api>("productcatalogapp")
@@ -30,8 +28,6 @@ var productApi = builder.AddProject<Projects.ProductCatalogService_Api>("product
     .WithReference(identityApi)
     .WaitFor(postgres)
     .WaitFor(redis)
-    // .WithEnvironment("ConnectionStrings__postgres", $"Server={hostInfra};Port=5434;Database=postgres;User Id=postgres;Password=P@ssw0rd")
-    // .WithEnvironment("ConnectionStrings__redis", $"{hostInfra}:6377")
     .WithReference(inventoryApi)
     .WithSwaggerUI();
 
@@ -41,8 +37,6 @@ var saleApi = builder.AddProject<Projects.SaleService_Api>("sale-api")
     .WithReference(identityApi)
     .WaitFor(postgres)
     .WaitFor(redis)
-    // .WithEnvironment("ConnectionStrings__postgres", $"Server={hostInfra};Port=5434;Database=postgres;User Id=postgres;Password=P@ssw0rd")
-    // .WithEnvironment("ConnectionStrings__redis", $"{hostInfra}:6377")
     .WithSwaggerUI();
 
 var shoppingCartApi = builder.AddProject<Projects.ShoppingCartService_Api>("shoppingcart-api")
@@ -52,8 +46,6 @@ var shoppingCartApi = builder.AddProject<Projects.ShoppingCartService_Api>("shop
     .WithReference(productApi)
     .WaitFor(postgres)
     .WaitFor(redis)
-    // .WithEnvironment("ConnectionStrings__postgres", $"Server={hostInfra};Port=5434;Database=postgres;User Id=postgres;Password=P@ssw0rd")
-    // .WithEnvironment("ConnectionStrings__redis", $"{hostInfra}:6377")
     .WithSwaggerUI();
 
 var webapigatewayApi = builder.AddProject<Projects.WebApiGateway>("webapigateway-api")
@@ -83,5 +75,22 @@ builder.AddNpmApp("web", "../web", "dev")
     .WaitFor(identityApi)
     .WaitFor(webapigatewayApi)
     .PublishAsDockerFile();
+
+if (!includeInfra)
+{
+    var hostInfra = "localhost";
+    inventoryApi.WithEnvironment("ConnectionStrings__postgres", $"Server={hostInfra};Port=5434;Database=postgres;User Id=postgres;Password=P@ssw0rd")
+                .WithEnvironment("ConnectionStrings__redis", $"{hostInfra}:6377");
+
+    productApi.WithEnvironment("ConnectionStrings__postgres", $"Server={hostInfra};Port=5434;Database=postgres;User Id=postgres;Password=P@ssw0rd")
+                .WithEnvironment("ConnectionStrings__redis", $"{hostInfra}:6377");
+
+    saleApi.WithEnvironment("ConnectionStrings__postgres", $"Server={hostInfra};Port=5434;Database=postgres;User Id=postgres;Password=P@ssw0rd")
+                .WithEnvironment("ConnectionStrings__redis", $"{hostInfra}:6377");
+
+    shoppingCartApi.WithEnvironment("ConnectionStrings__postgres", $"Server={hostInfra};Port=5434;Database=postgres;User Id=postgres;Password=P@ssw0rd")
+                .WithEnvironment("ConnectionStrings__redis", $"{hostInfra}:6377");
+
+}
 
 builder.Build().Run();
